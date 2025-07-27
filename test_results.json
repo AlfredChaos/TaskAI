@@ -1,0 +1,555 @@
+{
+  "schedule": {
+    "2024-01-15": [
+      {
+        "task_id": "task_019",
+        "task_name": "客户满意度调查",
+        "allocated_hours": 2.5,
+        "start_time": null,
+        "end_time": null
+      },
+      {
+        "task_id": "task_020",
+        "task_name": "服务流程优化",
+        "allocated_hours": 4.0,
+        "start_time": null,
+        "end_time": null
+      },
+      {
+        "task_id": "task_021",
+        "task_name": "员工培训",
+        "allocated_hours": 1.5,
+        "start_time": null,
+        "end_time": null
+      }
+    ],
+    "2024-01-16": [
+      {
+        "task_id": "task_010",
+        "task_name": "数据收集整理",
+        "allocated_hours": 3.0,
+        "start_time": null,
+        "end_time": null
+      },
+      {
+        "task_id": "task_006",
+        "task_name": "市场调研",
+        "allocated_hours": 3.0,
+        "start_time": null,
+        "end_time": null
+      },
+      {
+        "task_id": "task_011",
+        "task_name": "报告撰写",
+        "allocated_hours": 2.0,
+        "start_time": null,
+        "end_time": null
+      }
+    ],
+    "2024-01-17": [
+      {
+        "task_id": "task_021",
+        "task_name": "员工培训",
+        "allocated_hours": 1.5,
+        "start_time": null,
+        "end_time": null
+      },
+      {
+        "task_id": "task_011",
+        "task_name": "报告撰写",
+        "allocated_hours": 4.0,
+        "start_time": null,
+        "end_time": null
+      },
+      {
+        "task_id": "task_016",
+        "task_name": "选择培训课程",
+        "allocated_hours": 1.5,
+        "start_time": null,
+        "end_time": null
+      },
+      {
+        "task_id": "task_012",
+        "task_name": "报告审核修改",
+        "allocated_hours": 1.0,
+        "start_time": null,
+        "end_time": null
+      }
+    ],
+    "2024-01-18": [
+      {
+        "task_id": "task_001",
+        "task_name": "需求分析",
+        "allocated_hours": 4.0,
+        "start_time": null,
+        "end_time": null
+      },
+      {
+        "task_id": "task_007",
+        "task_name": "推广方案设计",
+        "allocated_hours": 4.0,
+        "start_time": null,
+        "end_time": null
+      }
+    ],
+    "2024-01-19": [
+      {
+        "task_id": "task_012",
+        "task_name": "报告审核修改",
+        "allocated_hours": 1.0,
+        "start_time": null,
+        "end_time": null
+      },
+      {
+        "task_id": "task_007",
+        "task_name": "推广方案设计",
+        "allocated_hours": 1.0,
+        "start_time": null,
+        "end_time": null
+      },
+      {
+        "task_id": "task_002",
+        "task_name": "数据库设计",
+        "allocated_hours": 6.0,
+        "start_time": null,
+        "end_time": null
+      }
+    ],
+    "2024-01-20": [
+      {
+        "task_id": "task_003",
+        "task_name": "前端界面开发",
+        "allocated_hours": 8.0,
+        "start_time": null,
+        "end_time": null
+      }
+    ],
+    "2024-01-21": [
+      {
+        "task_id": "task_013",
+        "task_name": "制定健身计划",
+        "allocated_hours": 1.0,
+        "start_time": null,
+        "end_time": null
+      },
+      {
+        "task_id": "task_008",
+        "task_name": "广告素材制作",
+        "allocated_hours": 4.0,
+        "start_time": null,
+        "end_time": null
+      },
+      {
+        "task_id": "task_003",
+        "task_name": "前端界面开发",
+        "allocated_hours": 3.0,
+        "start_time": null,
+        "end_time": null
+      }
+    ],
+    "2024-01-22": [
+      {
+        "task_id": "task_003",
+        "task_name": "前端界面开发",
+        "allocated_hours": 1.0,
+        "start_time": null,
+        "end_time": null
+      },
+      {
+        "task_id": "task_017",
+        "task_name": "参加在线培训",
+        "allocated_hours": 7.0,
+        "start_time": null,
+        "end_time": null
+      }
+    ],
+    "2024-01-23": [
+      {
+        "task_id": "task_009",
+        "task_name": "活动执行",
+        "allocated_hours": 2.0,
+        "start_time": null,
+        "end_time": null
+      },
+      {
+        "task_id": "task_004",
+        "task_name": "后端API开发",
+        "allocated_hours": 6.0,
+        "start_time": null,
+        "end_time": null
+      }
+    ],
+    "2024-01-24": [
+      {
+        "task_id": "task_014",
+        "task_name": "购买健身器材",
+        "allocated_hours": 2.0,
+        "start_time": null,
+        "end_time": null
+      },
+      {
+        "task_id": "task_004",
+        "task_name": "后端API开发",
+        "allocated_hours": 6.0,
+        "start_time": null,
+        "end_time": null
+      }
+    ],
+    "2024-01-25": [
+      {
+        "task_id": "task_017",
+        "task_name": "参加在线培训",
+        "allocated_hours": 5.0,
+        "start_time": null,
+        "end_time": null
+      },
+      {
+        "task_id": "task_004",
+        "task_name": "后端API开发",
+        "allocated_hours": 3.0,
+        "start_time": null,
+        "end_time": null
+      }
+    ],
+    "2024-01-26": [
+      {
+        "task_id": "task_004",
+        "task_name": "后端API开发",
+        "allocated_hours": 1.0,
+        "start_time": null,
+        "end_time": null
+      },
+      {
+        "task_id": "task_018",
+        "task_name": "完成培训作业",
+        "allocated_hours": 4.0,
+        "start_time": null,
+        "end_time": null
+      },
+      {
+        "task_id": "task_005",
+        "task_name": "系统测试",
+        "allocated_hours": 3.0,
+        "start_time": null,
+        "end_time": null
+      }
+    ],
+    "2024-01-27": [
+      {
+        "task_id": "task_005",
+        "task_name": "系统测试",
+        "allocated_hours": 5.0,
+        "start_time": null,
+        "end_time": null
+      },
+      {
+        "task_id": "task_015",
+        "task_name": "开始健身训练",
+        "allocated_hours": 3.0,
+        "start_time": null,
+        "end_time": null
+      }
+    ],
+    "2024-01-28": [
+      {
+        "task_id": "task_015",
+        "task_name": "开始健身训练",
+        "allocated_hours": 8.0,
+        "start_time": null,
+        "end_time": null
+      }
+    ],
+    "2024-01-29": [
+      {
+        "task_id": "task_015",
+        "task_name": "开始健身训练",
+        "allocated_hours": 8.0,
+        "start_time": null,
+        "end_time": null
+      }
+    ],
+    "2024-01-30": [
+      {
+        "task_id": "task_015",
+        "task_name": "开始健身训练",
+        "allocated_hours": 1.0,
+        "start_time": null,
+        "end_time": null
+      }
+    ]
+  },
+  "summary": {
+    "total_days_scheduled": 16,
+    "total_tasks_scheduled": 35,
+    "total_hours_scheduled": 121.0,
+    "category_distribution": {
+      "运营": 9.5,
+      "管理": 11.0,
+      "市场营销": 14.0,
+      "学习": 17.5,
+      "研发": 46.0,
+      "生活": 23.0
+    },
+    "pending_tasks_remaining": 0,
+    "overdue_tasks": 0,
+    "delayed_projects": 0
+  },
+  "projects": {
+    "proj_001": {
+      "project_id": "proj_001",
+      "name": "电商平台开发",
+      "category": "研发",
+      "priority": 1,
+      "deadline": "2024-02-15T23:59:59",
+      "status": "active"
+    },
+    "proj_002": {
+      "project_id": "proj_002",
+      "name": "市场推广活动",
+      "category": "市场营销",
+      "priority": 2,
+      "deadline": "2024-01-25T23:59:59",
+      "status": "active"
+    },
+    "proj_003": {
+      "project_id": "proj_003",
+      "name": "年度总结报告",
+      "category": "管理",
+      "priority": 1,
+      "deadline": "2024-01-20T23:59:59",
+      "status": "active"
+    },
+    "proj_004": {
+      "project_id": "proj_004",
+      "name": "健身计划",
+      "category": "生活",
+      "priority": 3,
+      "deadline": "2024-03-01T23:59:59",
+      "status": "active"
+    },
+    "proj_005": {
+      "project_id": "proj_005",
+      "name": "技术培训",
+      "category": "学习",
+      "priority": 2,
+      "deadline": "2024-02-01T23:59:59",
+      "status": "active"
+    },
+    "proj_006": {
+      "project_id": "proj_006",
+      "name": "客户服务优化",
+      "category": "运营",
+      "priority": 1,
+      "deadline": "2024-01-18T23:59:59",
+      "status": "active"
+    }
+  },
+  "tasks": {
+    "task_001": {
+      "task_id": "task_001",
+      "project_id": "proj_001",
+      "name": "需求分析",
+      "estimated_hours": 4.0,
+      "remaining_hours": 0.0,
+      "status": "completed",
+      "due_date": "2024-01-22T23:59:59"
+    },
+    "task_002": {
+      "task_id": "task_002",
+      "project_id": "proj_001",
+      "name": "数据库设计",
+      "estimated_hours": 6.0,
+      "remaining_hours": 0.0,
+      "status": "completed",
+      "due_date": "2024-01-25T23:59:59"
+    },
+    "task_003": {
+      "task_id": "task_003",
+      "project_id": "proj_001",
+      "name": "前端界面开发",
+      "estimated_hours": 12.0,
+      "remaining_hours": 0.0,
+      "status": "completed",
+      "due_date": "2024-02-05T23:59:59"
+    },
+    "task_004": {
+      "task_id": "task_004",
+      "project_id": "proj_001",
+      "name": "后端API开发",
+      "estimated_hours": 16.0,
+      "remaining_hours": 0.0,
+      "status": "completed",
+      "due_date": "2024-02-08T23:59:59"
+    },
+    "task_005": {
+      "task_id": "task_005",
+      "project_id": "proj_001",
+      "name": "系统测试",
+      "estimated_hours": 8.0,
+      "remaining_hours": 0.0,
+      "status": "completed",
+      "due_date": "2024-02-12T23:59:59"
+    },
+    "task_006": {
+      "task_id": "task_006",
+      "project_id": "proj_002",
+      "name": "市场调研",
+      "estimated_hours": 3.0,
+      "remaining_hours": 0.0,
+      "status": "completed",
+      "due_date": "2024-01-16T23:59:59"
+    },
+    "task_007": {
+      "task_id": "task_007",
+      "project_id": "proj_002",
+      "name": "推广方案设计",
+      "estimated_hours": 5.0,
+      "remaining_hours": 0.0,
+      "status": "completed",
+      "due_date": "2024-01-20T23:59:59"
+    },
+    "task_008": {
+      "task_id": "task_008",
+      "project_id": "proj_002",
+      "name": "广告素材制作",
+      "estimated_hours": 4.0,
+      "remaining_hours": 0.0,
+      "status": "completed",
+      "due_date": "2024-01-23T23:59:59"
+    },
+    "task_009": {
+      "task_id": "task_009",
+      "project_id": "proj_002",
+      "name": "活动执行",
+      "estimated_hours": 2.0,
+      "remaining_hours": 0.0,
+      "status": "completed",
+      "due_date": "2024-01-25T23:59:59"
+    },
+    "task_010": {
+      "task_id": "task_010",
+      "project_id": "proj_003",
+      "name": "数据收集整理",
+      "estimated_hours": 3.0,
+      "remaining_hours": 0.0,
+      "status": "completed",
+      "due_date": "2024-01-17T23:59:59"
+    },
+    "task_011": {
+      "task_id": "task_011",
+      "project_id": "proj_003",
+      "name": "报告撰写",
+      "estimated_hours": 6.0,
+      "remaining_hours": 0.0,
+      "status": "completed",
+      "due_date": "2024-01-19T23:59:59"
+    },
+    "task_012": {
+      "task_id": "task_012",
+      "project_id": "proj_003",
+      "name": "报告审核修改",
+      "estimated_hours": 2.0,
+      "remaining_hours": 0.0,
+      "status": "completed",
+      "due_date": "2024-01-20T23:59:59"
+    },
+    "task_013": {
+      "task_id": "task_013",
+      "project_id": "proj_004",
+      "name": "制定健身计划",
+      "estimated_hours": 1.0,
+      "remaining_hours": 0.0,
+      "status": "completed",
+      "due_date": "2024-01-20T23:59:59"
+    },
+    "task_014": {
+      "task_id": "task_014",
+      "project_id": "proj_004",
+      "name": "购买健身器材",
+      "estimated_hours": 2.0,
+      "remaining_hours": 0.0,
+      "status": "completed",
+      "due_date": "2024-01-25T23:59:59"
+    },
+    "task_015": {
+      "task_id": "task_015",
+      "project_id": "proj_004",
+      "name": "开始健身训练",
+      "estimated_hours": 20.0,
+      "remaining_hours": 0.0,
+      "status": "completed",
+      "due_date": "2024-02-28T23:59:59"
+    },
+    "task_016": {
+      "task_id": "task_016",
+      "project_id": "proj_005",
+      "name": "选择培训课程",
+      "estimated_hours": 1.5,
+      "remaining_hours": 0.0,
+      "status": "completed",
+      "due_date": "2024-01-18T23:59:59"
+    },
+    "task_017": {
+      "task_id": "task_017",
+      "project_id": "proj_005",
+      "name": "参加在线培训",
+      "estimated_hours": 12.0,
+      "remaining_hours": 0.0,
+      "status": "completed",
+      "due_date": "2024-01-30T23:59:59"
+    },
+    "task_018": {
+      "task_id": "task_018",
+      "project_id": "proj_005",
+      "name": "完成培训作业",
+      "estimated_hours": 4.0,
+      "remaining_hours": 0.0,
+      "status": "completed",
+      "due_date": "2024-02-01T23:59:59"
+    },
+    "task_019": {
+      "task_id": "task_019",
+      "project_id": "proj_006",
+      "name": "客户满意度调查",
+      "estimated_hours": 2.5,
+      "remaining_hours": 0.0,
+      "status": "completed",
+      "due_date": "2024-01-16T23:59:59"
+    },
+    "task_020": {
+      "task_id": "task_020",
+      "project_id": "proj_006",
+      "name": "服务流程优化",
+      "estimated_hours": 4.0,
+      "remaining_hours": 0.0,
+      "status": "completed",
+      "due_date": "2024-01-18T23:59:59"
+    },
+    "task_021": {
+      "task_id": "task_021",
+      "project_id": "proj_006",
+      "name": "员工培训",
+      "estimated_hours": 3.0,
+      "remaining_hours": 0.0,
+      "status": "completed",
+      "due_date": "2024-01-18T23:59:59"
+    }
+  },
+  "test_metadata": {
+    "test_date": "2025-07-27T19:06:52.720658",
+    "test_data_file": "test_data.json",
+    "scheduler_config": {
+      "daily_work_hours": 8.0,
+      "start_date": "2024-01-15T09:00:00",
+      "weights": {
+        "priority_weight": 2.0,
+        "deadline_weight": 3.0,
+        "workload_weight": 1.5
+      },
+      "diversity_config": {
+        "diversity_threshold": 0.1,
+        "look_ahead_count": 5
+      }
+    }
+  }
+}

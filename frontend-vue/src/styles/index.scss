@@ -1,0 +1,309 @@
+// 全局样式文件
+@use 'sass:color';
+@use "variables" as *;
+
+// 重置样式
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+body {
+  font-family: $font-family;
+  font-size: $font-size-base;
+  color: $text-primary;
+  background-color: $surface-color;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// 滚动条样式
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: $gray-100;
+  border-radius: $border-radius-base;
+}
+
+::-webkit-scrollbar-thumb {
+  background: $gray-300;
+  border-radius: $border-radius-base;
+  
+  &:hover {
+    background: $gray-400;
+  }
+}
+
+// 链接样式
+a {
+  color: $primary-color;
+  text-decoration: none;
+  transition: color $transition-base;
+  
+  &:hover {
+    color: color.scale($primary-color, $lightness: -10%);
+    text-decoration: underline;
+  }
+}
+
+// 按钮基础样式
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-2 $spacing-4;
+  border: 1px solid transparent;
+  border-radius: $border-radius-base;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  line-height: 1.5;
+  cursor: pointer;
+  transition: all $transition-base;
+  user-select: none;
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  // 主要按钮
+  &--primary {
+    background-color: $primary-color;
+    color: white;
+    
+    &:hover:not(:disabled) {
+      background-color: color.scale($primary-color, $lightness: -8%);
+      box-shadow: $shadow-md;
+    }
+    
+    &:active {
+      background-color: color.scale($primary-color, $lightness: -12%);
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+  }
+  
+  // 次要按钮
+  &--secondary {
+    background-color: white;
+    color: $text-primary;
+    border-color: $border-color;
+    
+    &:hover:not(:disabled) {
+      background-color: $gray-50;
+      box-shadow: $shadow-sm;
+    }
+  }
+  
+  // 文本按钮
+  &--text {
+    background-color: transparent;
+    color: $primary-color;
+    
+    &:hover:not(:disabled) {
+      background-color: rgba($primary-color, 0.1);
+    }
+  }
+  
+  // 尺寸变体
+  &--small {
+    padding: $spacing-1 $spacing-3;
+    font-size: $font-size-xs;
+  }
+  
+  &--large {
+    padding: $spacing-3 $spacing-6;
+    font-size: $font-size-base;
+  }
+}
+
+// 卡片样式
+.card {
+  background-color: $background-color;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-lg;
+  box-shadow: $shadow-sm;
+  padding: $spacing-6;
+  transition: box-shadow $transition-base;
+  
+  &:hover {
+    box-shadow: $shadow-md;
+    transform: translateY(-2px);
+  }
+  
+  &__header {
+    margin-bottom: $spacing-4;
+    padding-bottom: $spacing-4;
+    border-bottom: 1px solid $border-color;
+  }
+  
+  &__title {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $text-primary;
+    margin-bottom: $spacing-2;
+  }
+  
+  &__subtitle {
+    font-size: $font-size-sm;
+    color: $text-secondary;
+  }
+}
+
+// 表单样式
+.form-group {
+  margin-bottom: $spacing-4;
+  
+  label {
+    display: block;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $text-primary;
+    margin-bottom: $spacing-2;
+  }
+  
+  .form-control {
+    width: 100%;
+    padding: $spacing-3;
+    border: 1px solid $border-color;
+    border-radius: $border-radius-base;
+    font-size: $font-size-sm;
+    transition: border-color $transition-base, box-shadow $transition-base;
+    
+    &:focus {
+      outline: none;
+      border-color: $primary-color;
+      box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+    }
+    
+    &.error {
+      border-color: $danger-color;
+      
+      &:focus {
+        box-shadow: 0 0 0 3px rgba($danger-color, 0.1);
+      }
+    }
+  }
+  
+  .error-message {
+    margin-top: $spacing-1;
+    font-size: $font-size-xs;
+    color: $danger-color;
+  }
+}
+
+// 头像样式
+.avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: $border-radius-full;
+  background-color: $gray-200;
+  color: $text-secondary;
+  font-weight: $font-weight-medium;
+  position: relative;
+  
+  &--small {
+    width: 24px;
+    height: 24px;
+    font-size: $font-size-xs;
+  }
+  
+  &--medium {
+    width: 32px;
+    height: 32px;
+    font-size: $font-size-sm;
+  }
+  
+  &--large {
+    width: 40px;
+    height: 40px;
+    font-size: $font-size-base;
+  }
+  
+  img {
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    object-fit: cover;
+  }
+  
+  &__status {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 8px;
+    height: 8px;
+    border-radius: $border-radius-full;
+    border: 2px solid white;
+    
+    &--online {
+      background-color: $success-color;
+    }
+    
+    &--offline {
+      background-color: $gray-400;
+    }
+  }
+}
+
+// 工具类
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+
+.font-bold { font-weight: $font-weight-bold; }
+.font-semibold { font-weight: $font-weight-semibold; }
+.font-medium { font-weight: $font-weight-medium; }
+
+.text-primary { color: $text-primary; }
+.text-secondary { color: $text-secondary; }
+.text-success { color: $success-color; }
+.text-warning { color: $warning-color; }
+.text-danger { color: $danger-color; }
+
+.mb-0 { margin-bottom: 0; }
+.mb-1 { margin-bottom: $spacing-1; }
+.mb-2 { margin-bottom: $spacing-2; }
+.mb-3 { margin-bottom: $spacing-3; }
+.mb-4 { margin-bottom: $spacing-4; }
+.mb-6 { margin-bottom: $spacing-6; }
+
+.mt-0 { margin-top: 0; }
+.mt-1 { margin-top: $spacing-1; }
+.mt-2 { margin-top: $spacing-2; }
+.mt-3 { margin-top: $spacing-3; }
+.mt-4 { margin-top: $spacing-4; }
+.mt-6 { margin-top: $spacing-6; }
+
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+
+.w-full { width: 100%; }
+.h-full { height: 100%; }
+
+.hidden { display: none; }
+.block { display: block; }
+.inline-block { display: inline-block; }
+
+// 响应式工具类
+@media (max-width: $breakpoint-md) {
+  .md\:hidden { display: none; }
+  .md\:block { display: block; }
+}
+
+@media (max-width: $breakpoint-sm) {
+  .sm\:hidden { display: none; }
+  .sm\:block { display: block; }
+}

@@ -1,0 +1,379 @@
+// Mock数据
+import type { User, Project, Task, Message, Activity, Notification } from '../src/types'
+
+// 用户数据
+export const users: User[] = [
+  {
+    id: 'user_1',
+    name: '张三',
+    email: 'admin@example.com',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Zhang',
+    role: 'admin',
+    status: 'online',
+    createdAt: '2024-01-01T00:00:00Z',
+    updatedAt: '2024-01-01T00:00:00Z'
+  },
+  {
+    id: 'user_2',
+    name: '李四',
+    email: 'lisi@example.com',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Li',
+    role: 'manager',
+    status: 'online',
+    createdAt: '2024-01-02T00:00:00Z',
+    updatedAt: '2024-01-02T00:00:00Z'
+  },
+  {
+    id: 'user_3',
+    name: '王五',
+    email: 'wangwu@example.com',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Wang',
+    role: 'member',
+    status: 'away',
+    createdAt: '2024-01-03T00:00:00Z',
+    updatedAt: '2024-01-03T00:00:00Z'
+  },
+  {
+    id: 'user_4',
+    name: '赵六',
+    email: 'zhaoliu@example.com',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Zhao',
+    role: 'member',
+    status: 'offline',
+    createdAt: '2024-01-04T00:00:00Z',
+    updatedAt: '2024-01-04T00:00:00Z'
+  },
+  {
+    id: 'user_5',
+    name: '孙七',
+    email: 'sunqi@example.com',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sun',
+    role: 'member',
+    status: 'online',
+    createdAt: '2024-01-05T00:00:00Z',
+    updatedAt: '2024-01-05T00:00:00Z'
+  }
+]
+
+// 项目数据
+export const projects: Project[] = [
+  {
+    id: 'proj_1',
+    name: 'Tuscot项目管理系统',
+    description: '一个现代化的项目管理系统，支持任务管理、团队协作、进度跟踪等功能',
+    status: 'active',
+    progress: 75,
+    startDate: '2024-01-01',
+    endDate: '2024-06-30',
+    members: users.slice(0, 4),
+    tasks: [],
+    createdAt: '2024-01-01T00:00:00Z',
+    updatedAt: '2024-01-15T00:00:00Z'
+  },
+  {
+    id: 'proj_2',
+    name: '移动端应用开发',
+    description: '开发一款跨平台的移动端应用，提供便捷的移动办公体验',
+    status: 'active',
+    progress: 45,
+    startDate: '2024-02-01',
+    endDate: '2024-08-31',
+    members: users.slice(1, 4),
+    tasks: [],
+    createdAt: '2024-02-01T00:00:00Z',
+    updatedAt: '2024-02-15T00:00:00Z'
+  },
+  {
+    id: 'proj_3',
+    name: '数据分析平台',
+    description: '构建企业级数据分析平台，支持实时数据处理和可视化展示',
+    status: 'paused',
+    progress: 30,
+    startDate: '2024-01-15',
+    endDate: '2024-07-15',
+    members: users.slice(2, 5),
+    tasks: [],
+    createdAt: '2024-01-15T00:00:00Z',
+    updatedAt: '2024-02-01T00:00:00Z'
+  },
+  {
+    id: 'proj_4',
+    name: '客户关系管理系统',
+    description: '完善的CRM系统，帮助企业更好地管理客户关系和销售流程',
+    status: 'completed',
+    progress: 100,
+    startDate: '2023-09-01',
+    endDate: '2023-12-31',
+    members: users.slice(0, 3),
+    tasks: [],
+    createdAt: '2023-09-01T00:00:00Z',
+    updatedAt: '2023-12-31T00:00:00Z'
+  }
+]
+
+// 任务数据
+export const tasks: Task[] = [
+  {
+    id: 'task_1',
+    title: '设计系统架构',
+    description: '设计整个系统的技术架构，包括前端、后端和数据库设计',
+    status: 'done',
+    priority: 'high',
+    assignee: users[0],
+    reporter: users[1],
+    projectId: 'proj_1',
+    dueDate: '2024-01-15',
+    tags: ['架构', '设计'],
+    attachments: [],
+    comments: [],
+    createdAt: '2024-01-01T00:00:00Z',
+    updatedAt: '2024-01-15T00:00:00Z'
+  },
+  {
+    id: 'task_2',
+    title: '实现用户认证功能',
+    description: '开发用户登录、注册、密码重置等认证相关功能',
+    status: 'in-progress',
+    priority: 'high',
+    assignee: users[1],
+    reporter: users[0],
+    projectId: 'proj_1',
+    dueDate: '2024-02-01',
+    tags: ['认证', '安全'],
+    attachments: [],
+    comments: [],
+    createdAt: '2024-01-10T00:00:00Z',
+    updatedAt: '2024-01-20T00:00:00Z'
+  },
+  {
+    id: 'task_3',
+    title: '设计UI界面',
+    description: '设计系统的用户界面，包括页面布局、组件设计等',
+    status: 'review',
+    priority: 'medium',
+    assignee: users[2],
+    reporter: users[0],
+    projectId: 'proj_1',
+    dueDate: '2024-01-25',
+    tags: ['UI', '设计'],
+    attachments: [],
+    comments: [],
+    createdAt: '2024-01-05T00:00:00Z',
+    updatedAt: '2024-01-22T00:00:00Z'
+  },
+  {
+    id: 'task_4',
+    title: '数据库设计',
+    description: '设计数据库表结构，建立数据模型',
+    status: 'todo',
+    priority: 'medium',
+    assignee: users[3],
+    reporter: users[0],
+    projectId: 'proj_1',
+    dueDate: '2024-02-10',
+    tags: ['数据库', '设计'],
+    attachments: [],
+    comments: [],
+    createdAt: '2024-01-12T00:00:00Z',
+    updatedAt: '2024-01-12T00:00:00Z'
+  },
+  {
+    id: 'task_5',
+    title: '移动端界面适配',
+    description: '适配移动端界面，确保在不同设备上的显示效果',
+    status: 'in-progress',
+    priority: 'low',
+    assignee: users[2],
+    reporter: users[1],
+    projectId: 'proj_2',
+    dueDate: '2024-03-01',
+    tags: ['移动端', '适配'],
+    attachments: [],
+    comments: [],
+    createdAt: '2024-02-01T00:00:00Z',
+    updatedAt: '2024-02-10T00:00:00Z'
+  },
+  {
+    id: 'task_6',
+    title: 'API接口开发',
+    description: '开发后端API接口，提供数据服务',
+    status: 'todo',
+    priority: 'urgent',
+    assignee: users[4],
+    reporter: users[1],
+    projectId: 'proj_2',
+    dueDate: '2024-02-20',
+    tags: ['API', '后端'],
+    attachments: [],
+    comments: [],
+    createdAt: '2024-02-05T00:00:00Z',
+    updatedAt: '2024-02-05T00:00:00Z'
+  }
+]
+
+// 消息数据
+export const messages: Message[] = [
+  {
+    id: 'msg_1',
+    content: '大家好，项目正式启动了！',
+    type: 'text',
+    sender: users[0],
+    channelId: 'channel_1',
+    isRead: true,
+    createdAt: '2024-01-01T09:00:00Z'
+  },
+  {
+    id: 'msg_2',
+    content: '我已经完成了架构设计文档，请大家review一下',
+    type: 'text',
+    sender: users[1],
+    channelId: 'channel_1',
+    isRead: true,
+    createdAt: '2024-01-01T10:30:00Z'
+  },
+  {
+    id: 'msg_3',
+    content: '收到，我会尽快查看的',
+    type: 'text',
+    sender: users[2],
+    channelId: 'channel_1',
+    isRead: false,
+    createdAt: '2024-01-01T11:00:00Z'
+  },
+  {
+    id: 'msg_4',
+    content: '有什么技术问题可以随时讨论',
+    type: 'text',
+    sender: users[3],
+    channelId: 'channel_2',
+    isRead: true,
+    createdAt: '2024-01-01T14:00:00Z'
+  },
+  {
+    id: 'msg_5',
+    content: '今天的进度很不错，继续加油！',
+    type: 'text',
+    sender: users[0],
+    channelId: 'channel_1',
+    isRead: false,
+    createdAt: '2024-01-01T18:00:00Z'
+  }
+]
+
+// 活动数据
+export const activities: Activity[] = [
+  {
+    id: 'activity_1',
+    type: 'task_created',
+    description: '创建了新任务',
+    actor: users[0],
+    target: {
+      type: 'task',
+      id: 'task_1',
+      name: '设计系统架构'
+    },
+    metadata: {},
+    createdAt: '2024-01-01T09:00:00Z'
+  },
+  {
+    id: 'activity_2',
+    type: 'task_updated',
+    description: '更新了任务状态',
+    actor: users[1],
+    target: {
+      type: 'task',
+      id: 'task_2',
+      name: '实现用户认证功能'
+    },
+    metadata: { from: 'todo', to: 'in-progress' },
+    createdAt: '2024-01-01T10:30:00Z'
+  },
+  {
+    id: 'activity_3',
+    type: 'comment_added',
+    description: '添加了评论',
+    actor: users[2],
+    target: {
+      type: 'task',
+      id: 'task_3',
+      name: '设计UI界面'
+    },
+    metadata: {},
+    createdAt: '2024-01-01T11:15:00Z'
+  },
+  {
+    id: 'activity_4',
+    type: 'user_joined',
+    description: '加入了项目',
+    actor: users[4],
+    target: {
+      type: 'project',
+      id: 'proj_2',
+      name: '移动端应用开发'
+    },
+    metadata: {},
+    createdAt: '2024-01-01T14:00:00Z'
+  },
+  {
+    id: 'activity_5',
+    type: 'task_completed',
+    description: '完成了任务',
+    actor: users[0],
+    target: {
+      type: 'task',
+      id: 'task_1',
+      name: '设计系统架构'
+    },
+    metadata: {},
+    createdAt: '2024-01-01T17:30:00Z'
+  }
+]
+
+// 通知数据
+export const notifications: Notification[] = [
+  {
+    id: 'notif_1',
+    title: '新任务分配',
+    message: '您被分配了新任务：实现用户认证功能',
+    type: 'info',
+    isRead: false,
+    actionUrl: '/tasks/task_2',
+    createdAt: '2024-01-01T09:30:00Z'
+  },
+  {
+    id: 'notif_2',
+    title: '任务即将到期',
+    message: '任务"设计UI界面"将在3天后到期',
+    type: 'warning',
+    isRead: false,
+    actionUrl: '/tasks/task_3',
+    createdAt: '2024-01-01T10:00:00Z'
+  },
+  {
+    id: 'notif_3',
+    title: '项目进度更新',
+    message: 'Tuscot项目管理系统进度已更新至75%',
+    type: 'success',
+    isRead: true,
+    actionUrl: '/projects/proj_1',
+    createdAt: '2024-01-01T11:00:00Z'
+  },
+  {
+    id: 'notif_4',
+    title: '新消息',
+    message: '您在项目讨论组有新消息',
+    type: 'info',
+    isRead: true,
+    actionUrl: '/messages/channel_1',
+    createdAt: '2024-01-01T12:00:00Z'
+  },
+  {
+    id: 'notif_5',
+    title: '系统维护通知',
+    message: '系统将在今晚22:00-24:00进行维护',
+    type: 'warning',
+    isRead: false,
+    actionUrl: '',
+    createdAt: '2024-01-01T15:00:00Z'
+  }
+]

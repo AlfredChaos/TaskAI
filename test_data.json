@@ -1,0 +1,296 @@
+{
+  "projects": [
+    {
+      "project_id": "proj_001",
+      "name": "电商平台开发",
+      "category": "研发",
+      "priority": 1,
+      "deadline": "2024-02-15T23:59:59",
+      "status": "active"
+    },
+    {
+      "project_id": "proj_002",
+      "name": "市场推广活动",
+      "category": "市场营销",
+      "priority": 2,
+      "deadline": "2024-01-25T23:59:59",
+      "status": "active"
+    },
+    {
+      "project_id": "proj_003",
+      "name": "年度总结报告",
+      "category": "管理",
+      "priority": 1,
+      "deadline": "2024-01-20T23:59:59",
+      "status": "active"
+    },
+    {
+      "project_id": "proj_004",
+      "name": "健身计划",
+      "category": "生活",
+      "priority": 3,
+      "deadline": "2024-03-01T23:59:59",
+      "status": "active"
+    },
+    {
+      "project_id": "proj_005",
+      "name": "技术培训",
+      "category": "学习",
+      "priority": 2,
+      "deadline": "2024-02-01T23:59:59",
+      "status": "active"
+    },
+    {
+      "project_id": "proj_006",
+      "name": "客户服务优化",
+      "category": "运营",
+      "priority": 1,
+      "deadline": "2024-01-18T23:59:59",
+      "status": "active"
+    }
+  ],
+  "tasks": [
+    {
+      "task_id": "task_001",
+      "project_id": "proj_001",
+      "name": "需求分析",
+      "estimated_hours": 4.0,
+      "remaining_hours": 4.0,
+      "status": "pending",
+      "due_date": "2024-01-22T23:59:59"
+    },
+    {
+      "task_id": "task_002",
+      "project_id": "proj_001",
+      "name": "数据库设计",
+      "estimated_hours": 6.0,
+      "remaining_hours": 6.0,
+      "status": "pending",
+      "due_date": "2024-01-25T23:59:59"
+    },
+    {
+      "task_id": "task_003",
+      "project_id": "proj_001",
+      "name": "前端界面开发",
+      "estimated_hours": 12.0,
+      "remaining_hours": 12.0,
+      "status": "pending",
+      "due_date": "2024-02-05T23:59:59"
+    },
+    {
+      "task_id": "task_004",
+      "project_id": "proj_001",
+      "name": "后端API开发",
+      "estimated_hours": 16.0,
+      "remaining_hours": 16.0,
+      "status": "pending",
+      "due_date": "2024-02-08T23:59:59"
+    },
+    {
+      "task_id": "task_005",
+      "project_id": "proj_001",
+      "name": "系统测试",
+      "estimated_hours": 8.0,
+      "remaining_hours": 8.0,
+      "status": "pending",
+      "due_date": "2024-02-12T23:59:59"
+    },
+    {
+      "task_id": "task_006",
+      "project_id": "proj_002",
+      "name": "市场调研",
+      "estimated_hours": 3.0,
+      "remaining_hours": 3.0,
+      "status": "pending",
+      "due_date": "2024-01-16T23:59:59"
+    },
+    {
+      "task_id": "task_007",
+      "project_id": "proj_002",
+      "name": "推广方案设计",
+      "estimated_hours": 5.0,
+      "remaining_hours": 5.0,
+      "status": "pending",
+      "due_date": "2024-01-20T23:59:59"
+    },
+    {
+      "task_id": "task_008",
+      "project_id": "proj_002",
+      "name": "广告素材制作",
+      "estimated_hours": 4.0,
+      "remaining_hours": 4.0,
+      "status": "pending",
+      "due_date": "2024-01-23T23:59:59"
+    },
+    {
+      "task_id": "task_009",
+      "project_id": "proj_002",
+      "name": "活动执行",
+      "estimated_hours": 2.0,
+      "remaining_hours": 2.0,
+      "status": "pending",
+      "due_date": "2024-01-25T23:59:59"
+    },
+    {
+      "task_id": "task_010",
+      "project_id": "proj_003",
+      "name": "数据收集整理",
+      "estimated_hours": 3.0,
+      "remaining_hours": 3.0,
+      "status": "pending",
+      "due_date": "2024-01-17T23:59:59"
+    },
+    {
+      "task_id": "task_011",
+      "project_id": "proj_003",
+      "name": "报告撰写",
+      "estimated_hours": 6.0,
+      "remaining_hours": 6.0,
+      "status": "pending",
+      "due_date": "2024-01-19T23:59:59"
+    },
+    {
+      "task_id": "task_012",
+      "project_id": "proj_003",
+      "name": "报告审核修改",
+      "estimated_hours": 2.0,
+      "remaining_hours": 2.0,
+      "status": "pending",
+      "due_date": "2024-01-20T23:59:59"
+    },
+    {
+      "task_id": "task_013",
+      "project_id": "proj_004",
+      "name": "制定健身计划",
+      "estimated_hours": 1.0,
+      "remaining_hours": 1.0,
+      "status": "pending",
+      "due_date": "2024-01-20T23:59:59"
+    },
+    {
+      "task_id": "task_014",
+      "project_id": "proj_004",
+      "name": "购买健身器材",
+      "estimated_hours": 2.0,
+      "remaining_hours": 2.0,
+      "status": "pending",
+      "due_date": "2024-01-25T23:59:59"
+    },
+    {
+      "task_id": "task_015",
+      "project_id": "proj_004",
+      "name": "开始健身训练",
+      "estimated_hours": 20.0,
+      "remaining_hours": 20.0,
+      "status": "pending",
+      "due_date": "2024-02-28T23:59:59"
+    },
+    {
+      "task_id": "task_016",
+      "project_id": "proj_005",
+      "name": "选择培训课程",
+      "estimated_hours": 1.5,
+      "remaining_hours": 1.5,
+      "status": "pending",
+      "due_date": "2024-01-18T23:59:59"
+    },
+    {
+      "task_id": "task_017",
+      "project_id": "proj_005",
+      "name": "参加在线培训",
+      "estimated_hours": 12.0,
+      "remaining_hours": 12.0,
+      "status": "pending",
+      "due_date": "2024-01-30T23:59:59"
+    },
+    {
+      "task_id": "task_018",
+      "project_id": "proj_005",
+      "name": "完成培训作业",
+      "estimated_hours": 4.0,
+      "remaining_hours": 4.0,
+      "status": "pending",
+      "due_date": "2024-02-01T23:59:59"
+    },
+    {
+      "task_id": "task_019",
+      "project_id": "proj_006",
+      "name": "客户满意度调查",
+      "estimated_hours": 2.5,
+      "remaining_hours": 2.5,
+      "status": "pending",
+      "due_date": "2024-01-16T23:59:59"
+    },
+    {
+      "task_id": "task_020",
+      "project_id": "proj_006",
+      "name": "服务流程优化",
+      "estimated_hours": 4.0,
+      "remaining_hours": 4.0,
+      "status": "pending",
+      "due_date": "2024-01-18T23:59:59"
+    },
+    {
+      "task_id": "task_021",
+      "project_id": "proj_006",
+      "name": "员工培训",
+      "estimated_hours": 3.0,
+      "remaining_hours": 3.0,
+      "status": "pending",
+      "due_date": "2024-01-18T23:59:59"
+    }
+  ],
+  "scheduler_config": {
+    "daily_work_hours": 8.0,
+    "start_date": "2024-01-15T09:00:00",
+    "weights": {
+      "priority_weight": 2.0,
+      "deadline_weight": 3.0,
+      "workload_weight": 1.5
+    },
+    "diversity_config": {
+      "diversity_threshold": 0.1,
+      "look_ahead_count": 5
+    }
+  },
+  "test_scenarios": [
+    {
+      "name": "基础排期测试",
+      "description": "测试基本的任务排期功能",
+      "start_date": "2024-01-15T09:00:00",
+      "expected_behaviors": [
+        "逾期任务优先安排",
+        "高优先级项目优先",
+        "截止日期临近的任务优先",
+        "工作类别多样性平衡"
+      ]
+    },
+    {
+      "name": "逾期任务处理测试",
+      "description": "测试逾期任务的处理机制",
+      "start_date": "2024-01-17T09:00:00",
+      "expected_behaviors": [
+        "task_006和task_010应被标记为逾期",
+        "逾期任务应优先安排"
+      ]
+    },
+    {
+      "name": "多样性规则测试",
+      "description": "测试工作类别多样性平衡",
+      "start_date": "2024-01-15T09:00:00",
+      "expected_behaviors": [
+        "同一天不应连续安排同类别任务",
+        "在紧迫度相近时优先选择新类别"
+      ]
+    },
+    {
+      "name": "项目延期检测测试",
+      "description": "测试项目延期检测和处理",
+      "start_date": "2024-01-22T09:00:00",
+      "expected_behaviors": [
+        "超过截止日期且有未完成任务的项目应被标记为延期",
+        "延期项目应出现在delayed_projects列表中"
+      ]
+    }
+  ]
+}
