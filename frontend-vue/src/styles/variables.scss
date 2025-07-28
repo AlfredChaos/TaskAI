@@ -1,22 +1,22 @@
 // 设计系统变量
 // 基于UI/UX设计文档的颜色、字体、间距等规范
 
-// 主色调 - 紫色系 (严格按照设计文档)
-$primary-50: #F5F3FF;
-$primary-100: #EDE9FE;
-$primary-500: #6366F1;  // 主色
-$primary-600: #4F46E5;
-$primary-700: #4338CA;
+// TaskAI 项目配色方案
+$primary-50: #F6F2FC;
+$primary-100: #EEEFF7;
+$primary-500: #6C5DD3;  // 一级主题色：按钮、柱状图、进度条、环形占比图
+$primary-600: #5A4BC4;
+$primary-700: #4839B5;
 
-// 功能色彩 (严格按照设计文档)
-$success: #10B981;      // 成功/完成
-$warning: #F59E0B;      // 警告/进行中
-$error: #EF4444;        // 错误/延期
-$info: #3B82F6;         // 信息/提示
+// 功能色彩
+$success: #52CD9F;      // 二级配色：todo图标、环形占比图、进度条
+$warning: #FF9F38;      // 警告色
+$error: #F14A5B;        // 进度条危险色
+$info: #377DFF;         // 智能报告页深色原色：提示点、人类对话气泡
 
 // 兼容性变量
 $primary-color: $primary-500;
-$secondary-color: $info;
+$secondary-color: $success;
 $success-color: $success;
 $warning-color: $warning;
 $danger-color: $error;
@@ -34,12 +34,32 @@ $gray-800: #1f2937;
 $gray-900: #111827;
 
 // 语义化颜色
-$background-color: #ffffff;
-$surface-color: #f8fafc;
+$background-color: #F9F8F8;     // 背景色
+$surface-color: #EFF2F4;        // 智能报告页浅色背景：报告列表、AI对话气泡、对话框
 $border-color: $gray-200;
-$text-primary: $gray-900;
-$text-secondary: $gray-600;
+$text-primary: #000000;         // 主要文字颜色
+$text-secondary: #B6B6B6;       // 次级文字颜色
 $text-disabled: $gray-400;
+
+// 图标背景色 - 深色图标背景色（白色图标）
+$icon-dark-1: #64CBF4;
+$icon-dark-2: #FF9F38;
+$icon-dark-3: #E391EA;
+$icon-dark-4: #6C5DD3;
+
+// 图标背景色 - 浅色图标背景色（深色图标）
+$icon-light-1: #BFF1DF;
+$icon-light-2: #FAE6D2;
+$icon-light-3: #E0F5FD;
+$icon-light-4: #FFECD7;
+$icon-light-5: #BFF1DF;
+$icon-light-6: #EEEFF7;
+$icon-light-7: #F6F2FC;
+
+// 进度条颜色组合
+$progress-primary: #6C5DD3;
+$progress-secondary: #52CD9F;
+$progress-danger: #F14A5B;
 
 // 字体系统 (严格按照设计文档)
 $font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;

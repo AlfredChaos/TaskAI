@@ -3,6 +3,8 @@ import axios from 'axios'
 import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
 import { ElMessage } from 'element-plus'
 import type { ApiResponse } from '@/types'
+import { config } from '@/config'
+import { MockService } from '@/services/mockService'
 
 // 创建axios实例
 const request: AxiosInstance = axios.create({
@@ -22,13 +24,6 @@ request.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`
     }
     
-    // 添加请求时间戳
-    if (config.params) {
-      config.params._t = Date.now()
-    } else {
-      config.params = { _t: Date.now() }
-    }
-    
     return config
   },
   (error) => {
@@ -41,7 +36,7 @@ request.interceptors.request.use(
 request.interceptors.response.use(
   (response: AxiosResponse<ApiResponse>) => {
     const { data } = response
-    
+    console.log(response)
     // 检查业务状态码
     if (data.success) {
       return response
@@ -90,26 +85,78 @@ request.interceptors.response.use(
   }
 )
 
+/**
+ * 检查是否应该使用mock数据
+ * @param url 请求URL
+ */
+function shouldUseMock(): boolean {
+  return config.useMockData
+}
+
+/**
+ * 处理mock请求
+ * @param method HTTP方法
+ * @param url 请求URL
+ * @param data 请求数据
+ * @param requestConfig 请求配置
+ */
+async function handleMockRequest<T = unknown>(
+  method: string,
+  url: string,
+  data?: unknown,
+  requestConfig?: AxiosRequestConfig
+): Promise<ApiResponse<T>> {
+  console.log(`[Mock] ${method.toUpperCase()} ${url}`, data)
+  
+  // 提取查询参数
+  const params = requestConfig?.params || {}
+  
+  // 调用mock服务
+  const response = await MockService.handleRequest(
+    method.toUpperCase(),
+    url,
+    data as Record<string, unknown>,
+    params as Record<string, unknown>
+  )
+  
+  return response as ApiResponse<T>
+}
+
 // 请求方法封装
 export const http = {
-  get<T = unknown>(url: string, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
-    return request.get(url, config).then(res => res.data)
+  async get<T = unknown>(url: string, requestConfig?: AxiosRequestConfig): Promise<ApiResponse<T>> {
+    if (shouldUseMock()) {
+      return handleMockRequest<T>('GET', url, undefined, requestConfig)
+    }
+    return request.get(url, requestConfig).then(res => res.data)
   },
   
-  post<T = unknown>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
-    return request.post(url, data, config).then(res => res.data)
+  async post<T = unknown>(url: string, data?: unknown, requestConfig?: AxiosRequestConfig): Promise<ApiResponse<T>> {
+    if (shouldUseMock()) {
+      return handleMockRequest<T>('POST', url, data, requestConfig)
+    }
+    return request.post(url, data, requestConfig).then(res => res.data)
   },
   
-  put<T = unknown>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
-    return request.put(url, data, config).then(res => res.data)
+  async put<T = unknown>(url: string, data?: unknown, requestConfig?: AxiosRequestConfig): Promise<ApiResponse<T>> {
+    if (shouldUseMock()) {
+      return handleMockRequest<T>('PUT', url, data, requestConfig)
+    }
+    return request.put(url, data, requestConfig).then(res => res.data)
   },
   
-  delete<T = unknown>(url: string, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
-    return request.delete(url, config).then(res => res.data)
+  async delete<T = unknown>(url: string, requestConfig?: AxiosRequestConfig): Promise<ApiResponse<T>> {
+    if (shouldUseMock()) {
+      return handleMockRequest<T>('DELETE', url, undefined, requestConfig)
+    }
+    return request.delete(url, requestConfig).then(res => res.data)
   },
   
-  patch<T = unknown>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
-    return request.patch(url, data, config).then(res => res.data)
+  async patch<T = unknown>(url: string, data?: unknown, requestConfig?: AxiosRequestConfig): Promise<ApiResponse<T>> {
+    if (shouldUseMock()) {
+      return handleMockRequest<T>('PATCH', url, data, requestConfig)
+    }
+    return request.patch(url, data, requestConfig).then(res => res.data)
   }
 }
 

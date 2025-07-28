@@ -3,60 +3,36 @@
     <div class="login-card">
       <div class="login-header">
         <div class="logo">
-          <img src="/favicon.ico" alt="Tuscot" class="logo-icon" />
-          <h1 class="logo-text">Tuscot</h1>
+          <img src="/favicon.ico" alt="TaskAI" class="logo-icon" />
+          <h1 class="logo-text">TaskAI</h1>
         </div>
         <p class="subtitle">智能项目管理平台</p>
       </div>
-      
-      <el-form
-        ref="loginFormRef"
-        :model="loginForm"
-        :rules="loginRules"
-        class="login-form"
-        @submit.prevent="handleLogin"
-      >
+
+      <el-form ref="loginFormRef" :model="loginForm" :rules="loginRules" class="login-form"
+        @submit.prevent="handleLogin">
         <el-form-item prop="email">
-          <el-input
-            v-model="loginForm.email"
-            type="email"
-            placeholder="请输入邮箱"
-            size="large"
-            :prefix-icon="User"
-          />
+          <el-input v-model="loginForm.email" type="email" placeholder="请输入邮箱" size="large" :prefix-icon="User" />
         </el-form-item>
-        
+
         <el-form-item prop="password">
-          <el-input
-            v-model="loginForm.password"
-            type="password"
-            placeholder="请输入密码"
-            size="large"
-            :prefix-icon="Lock"
-            show-password
-            @keyup.enter="handleLogin"
-          />
+          <el-input v-model="loginForm.password" type="password" placeholder="请输入密码" size="large" :prefix-icon="Lock"
+            show-password @keyup.enter="handleLogin" />
         </el-form-item>
-        
+
         <el-form-item>
           <div class="form-options">
             <el-checkbox v-model="loginForm.remember">记住我</el-checkbox>
             <el-link type="primary" :underline="false">忘记密码？</el-link>
           </div>
         </el-form-item>
-        
+
         <el-form-item>
-          <el-button
-            type="primary"
-            size="large"
-            class="login-btn"
-            :loading="loading"
-            @click="handleLogin"
-          >
+          <el-button type="primary" size="large" class="login-btn" :loading="loading" @click="handleLogin">
             登录
           </el-button>
         </el-form-item>
-        
+
         <div class="register-link">
           <span>还没有账号？</span>
           <el-link type="primary" :underline="false" @click="goToRegister">
@@ -65,7 +41,7 @@
         </div>
       </el-form>
     </div>
-    
+
     <!-- 背景装饰 -->
     <div class="background-decoration">
       <div class="decoration-circle circle-1"></div>
@@ -80,6 +56,10 @@ import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage, type FormInstance, type FormRules } from 'element-plus'
 import { User, Lock } from '@element-plus/icons-vue'
+import { defineOptions } from 'vue'
+
+// Name
+defineOptions({ name: 'AppLogin' })
 
 const router = useRouter()
 
@@ -108,19 +88,19 @@ const loginRules: FormRules = {
 // 方法
 const handleLogin = async () => {
   if (!loginFormRef.value) return
-  
+
   try {
     const valid = await loginFormRef.value.validate()
     if (!valid) return
-    
+
     loading.value = true
-    
+
     // 模拟登录请求
     await new Promise(resolve => setTimeout(resolve, 1000))
-    
+
     // 保存token到localStorage
     localStorage.setItem('token', 'mock-token-' + Date.now())
-    
+
     ElMessage.success('登录成功')
     router.push('/dashboard')
   } catch (error) {
@@ -164,19 +144,19 @@ const goToRegister = () => {
 .login-header {
   text-align: center;
   margin-bottom: $spacing-8;
-  
+
   .logo {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: $spacing-3;
     margin-bottom: $spacing-4;
-    
+
     .logo-icon {
       width: 48px;
       height: 48px;
     }
-    
+
     .logo-text {
       margin: 0;
       font-size: $font-size-2xl;
@@ -184,7 +164,7 @@ const goToRegister = () => {
       color: $primary-color;
     }
   }
-  
+
   .subtitle {
     margin: 0;
     font-size: $font-size-base;
@@ -199,20 +179,20 @@ const goToRegister = () => {
     justify-content: space-between;
     width: 100%;
   }
-  
+
   .login-btn {
     width: 100%;
     height: 48px;
     font-size: $font-size-base;
     font-weight: $font-weight-medium;
   }
-  
+
   .register-link {
     text-align: center;
     margin-top: $spacing-4;
     font-size: $font-size-sm;
     color: $text-secondary;
-    
+
     span {
       margin-right: $spacing-2;
     }
@@ -226,13 +206,13 @@ const goToRegister = () => {
   width: 100%;
   height: 100%;
   pointer-events: none;
-  
+
   .decoration-circle {
     position: absolute;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.1);
     animation: float 6s ease-in-out infinite;
-    
+
     &.circle-1 {
       width: 200px;
       height: 200px;
@@ -240,7 +220,7 @@ const goToRegister = () => {
       left: 10%;
       animation-delay: 0s;
     }
-    
+
     &.circle-2 {
       width: 150px;
       height: 150px;
@@ -248,7 +228,7 @@ const goToRegister = () => {
       right: 10%;
       animation-delay: 2s;
     }
-    
+
     &.circle-3 {
       width: 100px;
       height: 100px;
@@ -260,9 +240,12 @@ const goToRegister = () => {
 }
 
 @keyframes float {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0px) rotate(0deg);
   }
+
   50% {
     transform: translateY(-20px) rotate(180deg);
   }
@@ -274,7 +257,7 @@ const goToRegister = () => {
     margin: $spacing-4;
     padding: $spacing-6;
   }
-  
+
   .login-header {
     .logo {
       .logo-text {

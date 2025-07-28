@@ -17,6 +17,7 @@ export interface Project {
   id: string
   name: string
   description: string
+  category: string
   status: 'active' | 'completed' | 'paused' | 'cancelled'
   progress: number
   startDate: string
@@ -27,17 +28,22 @@ export interface Project {
   updatedAt: string
 }
 
+// 任务状态枚举
+export type TaskStatus = 'pending' | 'overdue' | 'completed' | 'todo' | 'in-progress' | 'review' | 'done'
+
 // 任务相关类型
 export interface Task {
   id: string
   title: string
   description?: string
-  status: 'todo' | 'in-progress' | 'review' | 'done'
+  status: TaskStatus
   priority: 'low' | 'medium' | 'high' | 'urgent'
   assignee?: User
   reporter: User
   projectId: string
   dueDate?: string
+  estimatedHours?: number
+  remainingHours?: number
   tags: string[]
   attachments: Attachment[]
   comments: Comment[]
@@ -117,21 +123,18 @@ export interface Notification {
 // API响应类型
 export interface ApiResponse<T = unknown> {
   success: boolean
+  message: string
+  code: number
+  timestamp: string
   data: T
-  message?: string
-  code?: number
 }
 
 export interface PaginatedResponse<T = unknown> {
-  success: boolean
-  data: {
-    items: T[]
-    total: number
-    page: number
-    pageSize: number
-    totalPages: number
-  }
-  message?: string
+  list: T[]
+  total: number
+  page: number
+  pageSize: number
+  totalPages: number
 }
 
 // 表单相关类型
@@ -173,6 +176,13 @@ export interface DashboardStats {
   pendingTasks: number
   teamMembers: number
   recentActivities: Activity[]
+  // 新增字段
+  todayCompletedTasks?: number
+  todayTotalTasks?: number
+  allCompletedTasks?: number
+  allTotalTasks?: number
+  completedProjects?: number
+  overdueProjects?: number
 }
 
 // 图表数据类型

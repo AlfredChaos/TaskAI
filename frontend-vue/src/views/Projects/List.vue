@@ -283,7 +283,11 @@ import {
   Folder
 } from '@element-plus/icons-vue'
 import { formatDate } from '@/utils'
-import type { Project } from '@/types'
+import { projectApi } from '@/api'
+import type { Project } from '@/api'
+
+// 组件名称定义
+defineOptions({ name: 'ProjectListView' })
 
 const router = useRouter()
 
@@ -296,151 +300,27 @@ const viewMode = ref<'grid' | 'list'>('grid')
 const currentPage = ref(1)
 const pageSize = ref(12)
 
-// 扩展Project类型以包含额外属性
-interface ExtendedProject extends Project {
-  avatar?: string
-  memberCount: number
-  taskCount: number
-  deadline: Date
-}
-
-// 模拟项目数据
-const projects = ref<ExtendedProject[]>([
-  {
-    id: '1',
-    name: '移动端应用开发',
-    description: '开发一款跨平台的移动应用，支持iOS和Android系统',
-    status: 'active',
-    progress: 75,
-    startDate: '2024-01-10',
-    endDate: '2024-03-15',
-    memberCount: 8,
-    taskCount: 24,
-    deadline: new Date('2024-03-15'),
-    createdAt: '2024-01-10',
-    updatedAt: '2024-02-20',
-    avatar: '',
-    members: [
-      { 
-        id: '1', 
-        name: '张三', 
-        avatar: '', 
-        email: 'zhangsan@example.com',
-        role: 'member' as const,
-        status: 'online' as const,
-        createdAt: '2024-01-01',
-        updatedAt: '2024-02-01'
-      },
-      { 
-        id: '2', 
-        name: '李四', 
-        avatar: '', 
-        email: 'lisi@example.com',
-        role: 'member' as const,
-        status: 'online' as const,
-        createdAt: '2024-01-01',
-        updatedAt: '2024-02-01'
-      },
-      { 
-        id: '3', 
-        name: '王五', 
-        avatar: '', 
-        email: 'wangwu@example.com',
-        role: 'member' as const,
-        status: 'online' as const,
-        createdAt: '2024-01-01',
-        updatedAt: '2024-02-01'
-      }
-    ],
-    tasks: []
-  },
-  {
-    id: '2',
-    name: '企业官网重构',
-    description: '重新设计和开发公司官方网站，提升用户体验',
-    status: 'completed',
-    progress: 100,
-    startDate: '2023-12-01',
-    endDate: '2024-02-28',
-    memberCount: 5,
-    taskCount: 18,
-    deadline: new Date('2024-02-28'),
-    createdAt: '2023-12-01',
-    updatedAt: '2024-02-28',
-    avatar: '',
-    members: [
-      { 
-        id: '4', 
-        name: '赵六', 
-        avatar: '', 
-        email: 'zhaoliu@example.com',
-        role: 'member' as const,
-        status: 'online' as const,
-        createdAt: '2024-01-01',
-        updatedAt: '2024-02-01'
-      },
-      { 
-        id: '5', 
-        name: '钱七', 
-        avatar: '', 
-        email: 'qianqi@example.com',
-        role: 'member' as const,
-        status: 'online' as const,
-        createdAt: '2024-01-01',
-        updatedAt: '2024-02-01'
-      }
-    ],
-    tasks: []
-  },
-  {
-    id: '3',
-    name: 'AI智能客服系统',
-    description: '基于机器学习的智能客服系统，提供24/7客户支持',
-    status: 'paused',
-    progress: 45,
-    startDate: '2024-01-15',
-    endDate: '2024-05-20',
-    memberCount: 12,
-    taskCount: 36,
-    deadline: new Date('2024-05-20'),
-    createdAt: '2024-01-15',
-    updatedAt: '2024-02-10',
-    avatar: '',
-    members: [
-      { 
-        id: '6', 
-        name: '孙八', 
-        avatar: '', 
-        email: 'sunba@example.com',
-        role: 'member' as const,
-        status: 'online' as const,
-        createdAt: '2024-01-01',
-        updatedAt: '2024-02-01'
-      },
-      { 
-        id: '7', 
-        name: '周九', 
-        avatar: '', 
-        email: 'zhoujiu@example.com',
-        role: 'member' as const,
-        status: 'online' as const,
-        createdAt: '2024-01-01',
-        updatedAt: '2024-02-01'
-      },
-      { 
-        id: '8', 
-        name: '吴十', 
-        avatar: '', 
-        email: 'wushi@example.com',
-        role: 'member' as const,
-        status: 'online' as const,
-        createdAt: '2024-01-01',
-        updatedAt: '2024-02-01'
-      }
-    ],
-    tasks: []
+// 响应式数据
+const projects = ref<Project[]>([])
+// API调用方法
+const loadProjects = async () => {
+  try {
+    loading.value = true
+    const response = await projectApi.getProjects({
+      page: currentPage.value,
+      limit: pageSize.value,
+      search: searchQuery.value,
+      status: statusFilter.value,
+      sortBy: sortBy.value
+    })
+    projects.value = response.data.items
+  } catch (error) {
+    console.error('加载项目列表失败:', error)
+    ElMessage.error('加载项目列表失败，请稍后重试')
+  } finally {
+    loading.value = false
   }
-])
+}
 
 // 计算属性
 const filteredProjects = computed(() => {
@@ -519,12 +399,12 @@ const createProject = () => {
   router.push('/projects/create')
 }
 
-const viewProject = (projectId: string | ExtendedProject) => {
+const viewProject = (projectId: string | Project) => {
   const id = typeof projectId === 'string' ? projectId : projectId.id
   router.push(`/projects/${id}`)
 }
 
-const handleProjectAction = async (command: { action: string; project: ExtendedProject }) => {
+const handleProjectAction = async (command: { action: string; project: Project }) => {
   const { action, project } = command
   
   switch (action) {
@@ -546,13 +426,15 @@ const handleProjectAction = async (command: { action: string; project: ExtendedP
           }
         )
         // 执行删除操作
-        const index = projects.value.findIndex(p => p.id === project.id)
-        if (index > -1) {
-          projects.value.splice(index, 1)
-          ElMessage.success('项目删除成功')
-        }
-      } catch {
-        // 用户取消删除
+        await projectApi.deleteProject(project.id)
+        ElMessage.success('项目删除成功')
+        // 重新加载项目列表
+        await loadProjects()
+      } catch (error: unknown) {
+         if (error !== 'cancel') {
+           console.error('删除项目失败:', error)
+           ElMessage.error('删除项目失败，请稍后重试')
+         }
       }
       break
   }
@@ -561,15 +443,17 @@ const handleProjectAction = async (command: { action: string; project: ExtendedP
 const handleSizeChange = (size: number) => {
   pageSize.value = size
   currentPage.value = 1
+  loadProjects()
 }
 
 const handleCurrentChange = (page: number) => {
   currentPage.value = page
+  loadProjects()
 }
 
 // 生命周期
 onMounted(() => {
-  // 这里可以调用API获取项目数据
+  loadProjects()
 })
 </script>
 

@@ -2,347 +2,673 @@
   <div class="dashboard-view">
     <!-- 页面标题 -->
     <div class="page-header">
-      <h1 class="page-title">仪表板</h1>
-      <p class="page-subtitle">欢迎回来，{{ currentUser?.name || 'Admin' }}！</p>
+      <div class="header-left">
+        <h1 class="page-title">仪表盘</h1>
+        <p class="page-subtitle">欢迎回来，{{ currentUser?.name || 'Admin' }}！</p>
+      </div>
+      <div class="header-right">
+        <div class="current-datetime">
+          <div class="date">{{ currentDate }}</div>
+          <div class="time">{{ currentTime }}</div>
+        </div>
+      </div>
     </div>
-    
+
     <!-- 统计卡片 -->
     <div class="stats-grid">
-      <div class="stat-card" v-for="stat in stats" :key="stat.key">
-        <div class="stat-icon" :class="stat.iconClass">
-          <component :is="stat.icon" />
+      <!-- 今日任务卡片 -->
+      <div class="stat-card today-tasks">
+        <div class="stat-icon" :style="{ backgroundColor: stats[0].iconBg }">
+          <el-icon color="white">
+            <component :is="stats[0].icon" />
+          </el-icon>
         </div>
         <div class="stat-content">
-          <div class="stat-value">{{ stat.value }}</div>
-          <div class="stat-label">{{ stat.label }}</div>
-          <div class="stat-change" :class="stat.changeClass">
-            <el-icon><ArrowUp v-if="stat.trend === 'up'" /><ArrowDown v-else /></el-icon>
-            {{ stat.change }}
+          <div class="stat-value">
+            <CountUp :end-value="stats[0].completedTasks || 0" />
+            <span class="total">/
+              <CountUp :end-value="stats[0].totalTasks || 0" />
+            </span>
+          </div>
+          <div class="stat-label">{{ stats[0].label }}</div>
+          <div class="stat-details">
+            <div class="detail-item">
+              <span class="detail-label">已完成任务：</span>
+              <span class="detail-value">{{ stats[0].completedTasks || 0 }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">今日待办任务：</span>
+              <span class="detail-value">{{ (stats[0].totalTasks || 0) - (stats[0].completedTasks || 0) }}</span>
+            </div>
+          </div>
+          <ProgressBar :completed="stats[0].completedTasks || 0" :total="stats[0].totalTasks || 0" color="#64CBF4" />
+        </div>
+      </div>
+
+      <!-- 总任务卡片 -->
+      <div class="stat-card all-tasks">
+        <div class="stat-icon" :style="{ backgroundColor: stats[1].iconBg }">
+          <el-icon color="white">
+            <component :is="stats[1].icon" />
+          </el-icon>
+        </div>
+        <div class="stat-content">
+          <div class="stat-value">
+            <CountUp :end-value="stats[1].completedTasks || 0" />
+            <span class="total">/
+              <CountUp :end-value="stats[1].totalTasks || 0" />
+            </span>
+          </div>
+          <div class="stat-label">{{ stats[1].label }}</div>
+          <div class="stat-details">
+            <div class="detail-item">
+              <span class="detail-label">已完成任务：</span>
+              <span class="detail-value">{{ stats[1].completedTasks || 0 }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">待办任务：</span>
+              <span class="detail-value">{{ (stats[1].totalTasks || 0) - (stats[1].completedTasks || 0) }}</span>
+            </div>
+          </div>
+          <ProgressBar :completed="stats[1].completedTasks || 0" :total="stats[1].totalTasks || 0" color="#FF9F38" />
+        </div>
+      </div>
+
+      <!-- 总项目卡片 -->
+      <div class="stat-card all-projects">
+        <div class="stat-icon" :style="{ backgroundColor: stats[2].iconBg }">
+          <el-icon color="white">
+            <component :is="stats[2].icon" />
+          </el-icon>
+        </div>
+        <div class="stat-content">
+          <div class="stat-value">
+            <CountUp :end-value="stats[2].completedProjects || 0" />
+            <span class="total">/
+              <CountUp :end-value="stats[2].totalProjects || 0" />
+            </span>
+          </div>
+          <div class="stat-label">{{ stats[2].label }}</div>
+          <div class="stat-details">
+            <div class="detail-item">
+              <span class="detail-label">已完成项目：</span>
+              <span class="detail-value">{{ stats[2].completedProjects || 0 }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">进行中项目：</span>
+              <span class="detail-value">{{ (stats[2].totalProjects || 0) - (stats[2].completedProjects || 0) }}</span>
+            </div>
+          </div>
+          <ProgressBar :completed="stats[2].completedProjects || 0" :total="stats[2].totalProjects || 0"
+            color="#E391EA" />
+        </div>
+      </div>
+
+      <!-- 项目延期比率卡片 -->
+      <div class="stat-card overdue-rate">
+        <div class="stat-icon" :style="{ backgroundColor: stats[3].iconBg }">
+          <el-icon color="white">
+            <component :is="stats[3].icon" />
+          </el-icon>
+        </div>
+        <div class="stat-content">
+          <div class="stat-value">
+            <CountUp :end-value="Math.round(stats[3].percentage || 0)" />
+            <span class="unit">%</span>
+          </div>
+          <div class="stat-label">{{ stats[3].label }}</div>
+          <div class="stat-details">
+            <div class="detail-item">
+              <span class="detail-label">延期项目：</span>
+              <span class="detail-value">{{ stats[3].overdueProjects || 0 }}个</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">总项目数：</span>
+              <span class="detail-value">{{ projectsTotal || 0 }}个</span>
+            </div>
+          </div>
+          <div class="progress-section">
+            <ProgressBar :completed="stats[3].overdueProjects || 0" :total="projectsTotal || 0"
+              :color="stats[3].iconBg" />
           </div>
         </div>
       </div>
     </div>
-    
-    <!-- 图表区域 -->
-    <div class="charts-section">
-      <el-row :gutter="24">
-        <el-col :span="16">
-          <el-card class="chart-card">
-            <template #header>
-              <div class="card-header">
-                <span>项目进度趋势</span>
-                <el-select v-model="chartPeriod" size="small" style="width: 120px">
-                  <el-option label="最近7天" value="7d" />
-                  <el-option label="最近30天" value="30d" />
-                  <el-option label="最近90天" value="90d" />
-                </el-select>
+
+    <!-- 任务看板 -->
+    <div class="kanban-board">
+      <h2 class="board-title">今日任务看板</h2>
+      <div class="kanban-columns">
+        <!-- 待办任务列 -->
+        <div class="kanban-column" @dragover="onDragOver" @drop="onDrop('pending')">
+          <div class="column-header">
+            <div class="column-title">
+              <span class="title-text">待办</span>
+              <span class="task-count">({{ pendingTasks.length }})</span>
+            </div>
+            <el-button type="primary" :icon="Plus" circle size="small" class="add-task-btn"
+              @click="openCreateTaskDialog('pending')" />
+          </div>
+          <div class="task-list">
+            <div v-for="task in pendingTasks" :key="task.id" class="task-card" draggable="true"
+              @dragstart="onDragStart(task)" @dragend="onDragEnd">
+              <div class="task-header">
+                <h4 class="task-title">{{ task.title }}</h4>
+                <el-dropdown trigger="click">
+                  <el-button :icon="MoreFilled" text size="small" />
+                  <template #dropdown>
+                    <el-dropdown-menu>
+                      <el-dropdown-item @click="deleteTask(task)">
+                        <el-icon>
+                          <Delete />
+                        </el-icon>
+                        删除任务
+                      </el-dropdown-item>
+                    </el-dropdown-menu>
+                  </template>
+                </el-dropdown>
               </div>
-            </template>
-            <div ref="progressChartRef" class="chart-container"></div>
-          </el-card>
-        </el-col>
-        
-        <el-col :span="8">
-          <el-card class="chart-card">
-            <template #header>
-              <span>任务状态分布</span>
-            </template>
-            <div ref="statusChartRef" class="chart-container"></div>
-          </el-card>
-        </el-col>
-      </el-row>
-    </div>
-    
-    <!-- 最近活动和快速操作 -->
-    <div class="bottom-section">
-      <el-row :gutter="24">
-        <el-col :span="12">
-          <el-card class="activity-card">
-            <template #header>
-              <div class="card-header">
-                <span>最近活动</span>
-                <el-link type="primary" :underline="false" @click="viewAllActivities">
-                  查看全部
-                </el-link>
-              </div>
-            </template>
-            <div class="activity-list">
-              <div class="activity-item" v-for="activity in recentActivities" :key="activity.id">
-                <el-avatar :size="32" :src="activity.user.avatar">
-                  {{ activity.user.name.charAt(0) }}
-                </el-avatar>
-                <div class="activity-content">
-                  <div class="activity-text">
-                    <strong>{{ activity.user.name }}</strong>
-                    {{ activity.action }}
-                    <strong>{{ activity.target }}</strong>
-                  </div>
-                  <div class="activity-time">{{ formatTime(activity.createdAt) }}</div>
+              <p class="task-description">{{ task.description || '暂无描述' }}</p>
+              <div class="task-meta">
+                <div class="meta-item">
+                  <span class="meta-label">预估工时：</span>
+                  <span class="meta-value">{{ task.estimatedHours || 0 }}h</span>
                 </div>
+                <div class="meta-item">
+                  <span class="meta-label">剩余工时：</span>
+                  <span class="meta-value">{{ task.remainingHours || 0 }}h</span>
+                </div>
+                <div class="meta-item" v-if="task.dueDate">
+                  <span class="meta-label">截止日期：</span>
+                  <span class="meta-value">{{ formatDate(task.dueDate) }}</span>
+                </div>
+              </div>
+              <div class="task-priority">
+                <el-tag :type="getPriorityType(task.priority)" size="small">
+                  {{ task.priority === 'low' ? '低' : task.priority === 'medium' ? '中' : task.priority === 'high' ? '高' :
+                    '紧急' }}
+                </el-tag>
               </div>
             </div>
-          </el-card>
-        </el-col>
-        
-        <el-col :span="12">
-          <el-card class="quick-actions-card">
-            <template #header>
-              <span>快速操作</span>
-            </template>
-            <div class="quick-actions">
-              <div class="action-item" @click="createProject">
-                <div class="action-icon project">
-                  <el-icon><Folder /></el-icon>
+          </div>
+        </div>
+
+        <!-- 已完成任务列 -->
+        <div class="kanban-column" @dragover="onDragOver" @drop="onDrop('completed')">
+          <div class="column-header">
+            <div class="column-title">
+              <span class="title-text">已完成</span>
+              <span class="task-count">({{ completedTasks.length }})</span>
+            </div>
+            <el-button type="success" :icon="Plus" circle size="small" class="add-task-btn"
+              @click="openCreateTaskDialog('completed')" />
+          </div>
+          <div class="task-list">
+            <div v-for="task in completedTasks" :key="task.id" class="task-card completed" draggable="true"
+              @dragstart="onDragStart(task)" @dragend="onDragEnd">
+              <div class="task-header">
+                <h4 class="task-title">{{ task.title }}</h4>
+                <el-dropdown trigger="click">
+                  <el-button :icon="MoreFilled" text size="small" />
+                  <template #dropdown>
+                    <el-dropdown-menu>
+                      <el-dropdown-item @click="deleteTask(task)">
+                        <el-icon>
+                          <Delete />
+                        </el-icon>
+                        删除任务
+                      </el-dropdown-item>
+                    </el-dropdown-menu>
+                  </template>
+                </el-dropdown>
+              </div>
+              <p class="task-description">{{ task.description || '暂无描述' }}</p>
+              <div class="task-meta">
+                <div class="meta-item">
+                  <span class="meta-label">预估工时：</span>
+                  <span class="meta-value">{{ task.estimatedHours || 0 }}h</span>
                 </div>
-                <div class="action-text">
-                  <div class="action-title">创建项目</div>
-                  <div class="action-desc">开始一个新项目</div>
+                <div class="meta-item">
+                  <span class="meta-label">剩余工时：</span>
+                  <span class="meta-value">{{ task.remainingHours || 0 }}h</span>
+                </div>
+                <div class="meta-item" v-if="task.dueDate">
+                  <span class="meta-label">截止日期：</span>
+                  <span class="meta-value">{{ formatDate(task.dueDate) }}</span>
                 </div>
               </div>
-              
-              <div class="action-item" @click="createTask">
-                <div class="action-icon task">
-                  <el-icon><List /></el-icon>
-                </div>
-                <div class="action-text">
-                  <div class="action-title">创建任务</div>
-                  <div class="action-desc">添加新的任务</div>
-                </div>
-              </div>
-              
-              <div class="action-item" @click="inviteUser">
-                <div class="action-icon user">
-                  <el-icon><Plus /></el-icon>
-                </div>
-                <div class="action-text">
-                  <div class="action-title">邀请成员</div>
-                  <div class="action-desc">邀请团队成员</div>
-                </div>
-              </div>
-              
-              <div class="action-item" @click="viewReports">
-                <div class="action-icon report">
-                  <el-icon><TrendCharts /></el-icon>
-                </div>
-                <div class="action-text">
-                  <div class="action-title">查看报告</div>
-                  <div class="action-desc">项目统计报告</div>
-                </div>
+              <div class="task-priority">
+                <el-tag :type="getPriorityType(task.priority)" size="small">
+                  {{ task.priority === 'low' ? '低' : task.priority === 'medium' ? '中' : task.priority === 'high' ? '高' :
+                    '紧急' }}
+                </el-tag>
               </div>
             </div>
-          </el-card>
-        </el-col>
-      </el-row>
+          </div>
+        </div>
+
+        <!-- 逾期任务列 -->
+        <div class="kanban-column" @dragover="onDragOver" @drop="onDrop('overdue')">
+          <div class="column-header">
+            <div class="column-title">
+              <span class="title-text">逾期</span>
+              <span class="task-count">({{ overdueTasks.length }})</span>
+            </div>
+            <el-button type="danger" :icon="Plus" circle size="small" class="add-task-btn"
+              @click="openCreateTaskDialog('overdue')" />
+          </div>
+          <div class="task-list">
+            <div v-for="task in overdueTasks" :key="task.id" class="task-card overdue" draggable="true"
+              @dragstart="onDragStart(task)" @dragend="onDragEnd">
+              <div class="task-header">
+                <h4 class="task-title">{{ task.title }}</h4>
+                <el-dropdown trigger="click">
+                  <el-button :icon="MoreFilled" text size="small" />
+                  <template #dropdown>
+                    <el-dropdown-menu>
+                      <el-dropdown-item @click="deleteTask(task)">
+                        <el-icon>
+                          <Delete />
+                        </el-icon>
+                        删除任务
+                      </el-dropdown-item>
+                    </el-dropdown-menu>
+                  </template>
+                </el-dropdown>
+              </div>
+              <p class="task-description">{{ task.description || '暂无描述' }}</p>
+              <div class="task-meta">
+                <div class="meta-item">
+                  <span class="meta-label">预估工时：</span>
+                  <span class="meta-value">{{ task.estimatedHours || 0 }}h</span>
+                </div>
+                <div class="meta-item">
+                  <span class="meta-label">剩余工时：</span>
+                  <span class="meta-value">{{ task.remainingHours || 0 }}h</span>
+                </div>
+                <div class="meta-item" v-if="task.dueDate">
+                  <span class="meta-label">截止日期：</span>
+                  <span class="meta-value">{{ formatDate(task.dueDate) }}</span>
+                </div>
+              </div>
+              <div class="task-priority">
+                <el-tag :type="getPriorityType(task.priority)" size="small">
+                  {{ task.priority === 'low' ? '低' : task.priority === 'medium' ? '中' : task.priority === 'high' ? '高' :
+                    '紧急' }}
+                </el-tag>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+
+    <!-- 创建任务对话框 -->
+    <el-dialog v-model="showCreateTaskDialog" title="创建新任务" width="500px"
+      :before-close="() => showCreateTaskDialog = false">
+      <el-form :model="createTaskForm" label-width="100px">
+        <el-form-item label="任务标题" required>
+          <el-input v-model="createTaskForm.title" placeholder="请输入任务标题" />
+        </el-form-item>
+        <el-form-item label="任务描述">
+          <el-input v-model="createTaskForm.description" type="textarea" :rows="3" placeholder="请输入任务描述" />
+        </el-form-item>
+        <el-form-item label="优先级">
+          <el-select v-model="createTaskForm.priority" placeholder="请选择优先级">
+            <el-option label="低" value="low" />
+            <el-option label="中" value="medium" />
+            <el-option label="高" value="high" />
+            <el-option label="紧急" value="urgent" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="截止日期">
+          <el-date-picker v-model="createTaskForm.dueDate" type="date" placeholder="请选择截止日期" style="width: 100%" />
+        </el-form-item>
+        <el-form-item label="预估工时">
+          <el-input-number v-model="createTaskForm.estimatedHours" :min="0" :step="0.5" placeholder="预估工时（小时）"
+            style="width: 100%" />
+        </el-form-item>
+        <el-form-item label="剩余工时">
+          <el-input-number v-model="createTaskForm.remainingHours" :min="0" :step="0.5" placeholder="剩余工时（小时）"
+            style="width: 100%" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="showCreateTaskDialog = false">取消</el-button>
+          <el-button type="primary" @click="createTask">创建</el-button>
+        </span>
+      </template>
+    </el-dialog>
+
   </div>
 </template>
 
-<script setup lang="ts" name="DashboardView">
+<script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
-import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import {
-  Odometer,
   Folder,
-  List,
-  User,
-  ArrowUp,
-  ArrowDown,
+  Document,
+  WarningFilled,
   Plus,
-  TrendCharts
+  MoreFilled,
+  Delete
 } from '@element-plus/icons-vue'
-import * as echarts from 'echarts'
-import { getRelativeTime } from '@/utils'
+import { dashboardApi, authApi, taskApi } from '@/api'
+import type { DashboardStats, User as UserType, Task, CreateTaskRequest } from '@/api'
+import CountUp from '@/components/Common/CountUp.vue'
+import ProgressBar from '@/components/Common/ProgressBar.vue'
+import { ElMessageBox, ElDialog, ElForm, ElFormItem, ElInput, ElSelect, ElOption, ElDatePicker, ElInputNumber, ElButton } from 'element-plus'
 
-const router = useRouter()
+// 组件名称定义
+defineOptions({ name: 'DashboardView' })
+
+
 
 // 响应式数据
-const progressChartRef = ref<HTMLElement>()
-const statusChartRef = ref<HTMLElement>()
-const chartPeriod = ref('30d')
-
-// 计算属性
-const currentUser = computed(() => ({ name: 'Admin' }))
+const loading = ref(false)
+const currentUser = ref<UserType | null>(null)
+const dashboardStats = ref<DashboardStats | null>(null)
+const todayTasks = ref<Task[]>([])
+const allTasks = ref<Task[]>([])
+const showCreateTaskDialog = ref(false)
+const createTaskForm = ref<CreateTaskRequest>({
+  title: '',
+  description: '',
+  status: 'pending',
+  priority: 'medium',
+  projectId: '',
+  dueDate: '',
+  estimatedHours: 0,
+  remainingHours: 0,
+  tags: [],
+  reporter: currentUser.value!
+})
+const draggedTask = ref<Task | null>(null)
 
 // 统计数据
-const stats = ref([
+const todayCompleted = ref(0)
+const todayTotal = ref(0)
+const allCompleted = ref(0)
+const allTotal = ref(0)
+const projectsCompleted = ref(0)
+const projectsTotal = ref(0)
+const overdueRate = ref(0)
+
+// 任务看板数据
+const pendingTasks = computed(() => allTasks.value.filter(task => task.status === 'pending'))
+const completedTasks = computed(() => allTasks.value.filter(task => task.status === 'completed'))
+const overdueTasks = computed(() => allTasks.value.filter(task => task.status === 'overdue'))
+
+// 当前日期时间
+const currentDate = ref('')
+const currentTime = ref('')
+
+// 更新当前时间
+const updateDateTime = () => {
+  const now = new Date()
+  currentDate.value = now.toLocaleDateString('zh-CN', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    weekday: 'long'
+  })
+  currentTime.value = now.toLocaleTimeString('zh-CN', {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
+  })
+}
+
+// 统计数据
+const stats = computed(() => [
   {
-    key: 'projects',
-    label: '活跃项目',
-    value: '12',
-    change: '+2.5%',
-    trend: 'up',
-    changeClass: 'positive',
+    label: '今日任务',
+    icon: Document,
+    iconBg: '#64CBF4',
+    completedTasks: todayCompleted.value || 0,
+    totalTasks: todayTotal.value || 0
+  },
+  {
+    label: '总任务',
+    icon: Document,
+    iconBg: '#FF9F38',
+    completedTasks: allCompleted.value || 0,
+    totalTasks: allTotal.value || 0
+  },
+  {
+    label: '总项目',
     icon: Folder,
-    iconClass: 'project'
+    iconBg: '#E391EA',
+    completedProjects: projectsCompleted.value || 0,
+    totalProjects: projectsTotal.value || 0
   },
   {
-    key: 'tasks',
-    label: '待办任务',
-    value: '48',
-    change: '-5.2%',
-    trend: 'down',
-    changeClass: 'negative',
-    icon: List,
-    iconClass: 'task'
-  },
-  {
-    key: 'members',
-    label: '团队成员',
-    value: '24',
-    change: '+12.3%',
-    trend: 'up',
-    changeClass: 'positive',
-    icon: User,
-    iconClass: 'user'
-  },
-  {
-    key: 'completion',
-    label: '完成率',
-    value: '85%',
-    change: '+3.1%',
-    trend: 'up',
-    changeClass: 'positive',
-    icon: Odometer,
-    iconClass: 'completion'
+    label: '项目延期比率',
+    icon: WarningFilled,
+    iconBg: '#6C5DD3',
+    percentage: overdueRate.value || 0,
+    overdueProjects: Math.round(((overdueRate.value || 0) / 100) * (projectsTotal.value || 0))
   }
 ])
 
-// 最近活动数据
-const recentActivities = ref([
-  {
-    id: 1,
-    user: { name: '张三', avatar: '' },
-    action: '完成了任务',
-    target: '用户界面设计',
-    createdAt: new Date(Date.now() - 1000 * 60 * 30) // 30分钟前
-  },
-  {
-    id: 2,
-    user: { name: '李四', avatar: '' },
-    action: '创建了项目',
-    target: '移动端应用开发',
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2) // 2小时前
-  },
-  {
-    id: 3,
-    user: { name: '王五', avatar: '' },
-    action: '更新了任务',
-    target: '数据库优化',
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 4) // 4小时前
-  },
-  {
-    id: 4,
-    user: { name: '赵六', avatar: '' },
-    action: '评论了任务',
-    target: 'API接口开发',
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 8) // 8小时前
-  }
-])
+// API调用方法
+const loadDashboardData = async () => {
+  try {
+    loading.value = true
 
-// 方法
-const formatTime = (date: Date) => {
-  return getRelativeTime(date)
-}
+    // 并行加载所有数据
+    const [statsRes, userRes, todayTasksRes, allTasksRes] = await Promise.all([
+      dashboardApi.getStats(),
+      authApi.getCurrentUser(),
+      taskApi.getTodayTasks(),
+      taskApi.getTasks()
+    ])
 
-const initCharts = () => {
-  // 初始化进度趋势图
-  if (progressChartRef.value) {
-    const progressChart = echarts.init(progressChartRef.value)
-    const progressOption = {
-      tooltip: {
-        trigger: 'axis'
-      },
-      xAxis: {
-        type: 'category',
-        data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
-      },
-      yAxis: {
-        type: 'value',
-        max: 100
-      },
-      series: [
-        {
-          name: '完成率',
-          type: 'line',
-          smooth: true,
-          data: [65, 72, 68, 75, 82, 78, 85],
-          itemStyle: {
-            color: '#409EFF'
-          },
-          areaStyle: {
-            color: {
-              type: 'linear',
-              x: 0,
-              y: 0,
-              x2: 0,
-              y2: 1,
-              colorStops: [
-                { offset: 0, color: 'rgba(64, 158, 255, 0.3)' },
-                { offset: 1, color: 'rgba(64, 158, 255, 0.1)' }
-              ]
-            }
-          }
-        }
-      ]
+    dashboardStats.value = statsRes.data
+    currentUser.value = userRes.data
+    // 加载今日待办任务
+    todayTasks.value = todayTasksRes.data || []
+    // 加载所有任务
+    allTasks.value = allTasksRes.data?.list || []
+
+    // 更新统计卡片数据
+    if (statsRes.data) {
+      const data = statsRes.data
+
+      // 更新今日任务数据
+      todayCompleted.value = data.completedTasks || 15
+      todayTotal.value = (data.completedTasks || 15) + (data.pendingTasks || 5)
+
+      // 更新总任务数据
+      allCompleted.value = data.completedTasks || 45
+      allTotal.value = (data.completedTasks || 45) + (data.pendingTasks || 23)
+
+      // 更新总项目数据
+      projectsCompleted.value = data.completedProjects || 8
+      projectsTotal.value = data.totalProjects || 12
+
+      // 更新项目延期比率数据
+      const overdueProjects = 2 // 从mock数据推算
+      overdueRate.value = (data.totalProjects || 0) > 0
+        ? (overdueProjects / (data.totalProjects || 0)) * 100
+        : 0
     }
-    progressChart.setOption(progressOption)
+
+
+  } catch (error) {
+    console.error('加载仪表板数据失败:', error)
+    ElMessage.error('加载数据失败，请稍后重试')
+  } finally {
+    loading.value = false
   }
-  
-  // 初始化状态分布图
-  if (statusChartRef.value) {
-    const statusChart = echarts.init(statusChartRef.value)
-    const statusOption = {
-      tooltip: {
-        trigger: 'item'
-      },
-      series: [
-        {
-          type: 'pie',
-          radius: ['40%', '70%'],
-          data: [
-            { value: 35, name: '进行中', itemStyle: { color: '#409EFF' } },
-            { value: 25, name: '已完成', itemStyle: { color: '#67C23A' } },
-            { value: 15, name: '待开始', itemStyle: { color: '#E6A23C' } },
-            { value: 10, name: '已暂停', itemStyle: { color: '#F56C6C' } }
-          ],
-          emphasis: {
-            itemStyle: {
-              shadowBlur: 10,
-              shadowOffsetX: 0,
-              shadowColor: 'rgba(0, 0, 0, 0.5)'
-            }
-          }
-        }
-      ]
+}
+
+
+
+// 任务看板方法
+
+/**
+ * 打开创建任务对话框
+ * @param status 任务状态
+ */
+const openCreateTaskDialog = (status: Task['status']) => {
+  createTaskForm.value = {
+    title: '',
+    description: '',
+    status,
+    priority: 'medium',
+    projectId: '',
+    dueDate: '',
+    estimatedHours: 0,
+    remainingHours: 0,
+    tags: [],
+    reporter: currentUser.value!
+  }
+  showCreateTaskDialog.value = true
+}
+
+/**
+ * 创建任务
+ */
+const createTask = async () => {
+  try {
+    await taskApi.createTask(createTaskForm.value)
+    ElMessage.success('任务创建成功')
+    showCreateTaskDialog.value = false
+    // 重新加载任务数据
+    await loadTasksData()
+  } catch (error) {
+    console.error('创建任务失败:', error)
+    ElMessage.error('创建任务失败，请稍后重试')
+  }
+}
+
+/**
+ * 删除任务
+ * @param task 要删除的任务
+ */
+const deleteTask = async (task: Task) => {
+  try {
+    await ElMessageBox.confirm(
+      `确定要删除任务「${task.title}」吗？此操作不可撤销。`,
+      '确认删除',
+      {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }
+    )
+
+    await taskApi.deleteTask(task.id)
+    ElMessage.success('任务删除成功')
+    // 重新加载任务数据
+    await loadTasksData()
+  } catch (error) {
+    if (error !== 'cancel') {
+      console.error('删除任务失败:', error)
+      ElMessage.error('删除任务失败，请稍后重试')
     }
-    statusChart.setOption(statusOption)
   }
 }
 
-const createProject = () => {
-  router.push('/projects/create')
+/**
+ * 拖拽开始
+ * @param task 被拖拽的任务
+ */
+const onDragStart = (task: Task) => {
+  draggedTask.value = task
 }
 
-const createTask = () => {
-  router.push('/tasks/create')
+/**
+ * 拖拽结束
+ */
+const onDragEnd = () => {
+  draggedTask.value = null
 }
 
-const inviteUser = () => {
-  ElMessage.info('邀请功能开发中')
+/**
+ * 拖拽放置
+ * @param status 目标状态
+ */
+const onDrop = async (status: Task['status']) => {
+  if (!draggedTask.value || draggedTask.value.status === status) {
+    return
+  }
+
+  try {
+    await taskApi.updateTaskStatus(draggedTask.value.id, status)
+    ElMessage.success('任务状态更新成功')
+    // 重新加载任务数据
+    await loadTasksData()
+  } catch (error) {
+    console.error('更新任务状态失败:', error)
+    ElMessage.error('更新任务状态失败，请稍后重试')
+  }
 }
 
-const viewReports = () => {
-  ElMessage.info('报告功能开发中')
+/**
+ * 允许拖拽放置
+ * @param event 拖拽事件
+ */
+const onDragOver = (event: DragEvent) => {
+  event.preventDefault()
 }
 
-const viewAllActivities = () => {
-  router.push('/activities')
+/**
+ * 重新加载任务数据
+ */
+const loadTasksData = async () => {
+  try {
+    const allTasksRes = await taskApi.getTasks()
+    allTasks.value = allTasksRes.data?.list || []
+  } catch (error) {
+    console.error('加载任务数据失败:', error)
+  }
 }
+
+/**
+ * 获取优先级对应的标签类型
+ * @param priority 优先级
+ * @returns Element Plus标签类型
+ */
+const getPriorityType = (priority: string) => {
+  const typeMap: Record<string, string> = {
+    high: 'danger',
+    medium: 'warning',
+    low: 'info',
+    urgent: 'danger'
+  }
+  return typeMap[priority] || 'info'
+}
+
+/**
+ * 格式化日期
+ * @param date 日期字符串
+ * @returns 格式化后的日期
+ */
+const formatDate = (date: string) => {
+  return new Date(date).toLocaleDateString('zh-CN')
+}
+
+
+
+
+
+
+
+
 
 // 生命周期
 onMounted(() => {
-  initCharts()
+  loadDashboardData()
+
+  // 初始化时间显示
+  updateDateTime()
+
+  // 每秒更新时间
+  setInterval(updateDateTime, 1000)
 })
 </script>
 
@@ -351,42 +677,66 @@ onMounted(() => {
 
 .dashboard-view {
   .page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     margin-bottom: $spacing-6;
-    
-    .page-title {
-      margin: 0 0 $spacing-2 0;
-      font-size: $font-size-2xl;
-      font-weight: $font-weight-bold;
-      color: $text-primary;
+
+    .header-left {
+      .page-title {
+        margin: 0 0 $spacing-2 0;
+        font-size: $font-size-2xl;
+        font-weight: $font-weight-bold;
+        color: $text-primary;
+      }
+
+      .page-subtitle {
+        margin: 0;
+        font-size: $font-size-base;
+        color: $text-secondary;
+      }
     }
-    
-    .page-subtitle {
-      margin: 0;
-      font-size: $font-size-base;
-      color: $text-secondary;
+
+    .header-right {
+      .current-datetime {
+        text-align: right;
+
+        .date {
+          font-size: $font-size-lg;
+          font-weight: $font-weight-semibold;
+          color: $text-primary;
+          margin-bottom: $spacing-1;
+        }
+
+        .time {
+          font-size: $font-size-base;
+          color: $text-secondary;
+          font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        }
+      }
     }
   }
-  
+
   .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: $spacing-6;
     margin-bottom: $spacing-8;
-    
+
     .stat-card {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       padding: $spacing-6;
-      background: $background-color;
+      background: white;
       border-radius: $border-radius-lg;
       box-shadow: $shadow-sm;
       transition: transform $transition-base, box-shadow $transition-base;
-      
+
       &:hover {
         transform: translateY(-2px);
         box-shadow: $shadow-md;
       }
-      
+
       .stat-icon {
         display: flex;
         align-items: center;
@@ -395,216 +745,274 @@ onMounted(() => {
         height: 48px;
         border-radius: $border-radius-base;
         margin-right: $spacing-4;
-        
+        flex-shrink: 0;
+
         .el-icon {
           font-size: 24px;
           color: white;
         }
-        
-        &.project {
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-        
-        &.task {
-          background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        }
-        
-        &.user {
-          background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-        }
-        
-        &.completion {
-          background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-        }
       }
-      
+
       .stat-content {
         flex: 1;
-        
+        min-width: 0;
+
         .stat-value {
           font-size: $font-size-2xl;
           font-weight: $font-weight-bold;
           color: $text-primary;
           margin-bottom: $spacing-1;
+          display: flex;
+          align-items: baseline;
+          gap: 4px;
+
+          .total {
+            font-size: $font-size-base;
+            color: $text-secondary;
+            font-weight: normal;
+          }
         }
-        
+
         .stat-label {
           font-size: $font-size-sm;
           color: $text-secondary;
           margin-bottom: $spacing-2;
         }
-        
-        .stat-change {
-          display: flex;
-          align-items: center;
-          gap: $spacing-1;
-          font-size: $font-size-sm;
-          font-weight: $font-weight-medium;
-          
-          &.positive {
-            color: $success-color;
+
+        .stat-details {
+          margin-bottom: $spacing-3;
+
+          .detail-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: $spacing-1;
+
+            &:last-child {
+              margin-bottom: 0;
+            }
+
+            .detail-label {
+              font-size: $font-size-xs;
+              color: $text-secondary;
+            }
+
+            .detail-value {
+              font-size: $font-size-xs;
+              color: $text-primary;
+              font-weight: $font-weight-medium;
+            }
           }
-          
-          &.negative {
-            color: $danger-color;
+        }
+
+        .stat-date {
+          font-size: $font-size-xs;
+          color: $text-secondary;
+          margin-bottom: $spacing-3;
+        }
+      }
+
+      &.overdue-rate {
+        .stat-value {
+          .unit {
+            font-size: $font-size-lg;
+            color: $text-secondary;
+            font-weight: normal;
+            margin-left: 2px;
           }
-          
-          .el-icon {
-            font-size: 12px;
-          }
+        }
+
+        .progress-section {
+          margin-top: $spacing-3;
         }
       }
     }
   }
-  
-  .charts-section {
-    margin-bottom: $spacing-8;
-    
-    .chart-card {
-      .card-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-      }
-      
-      .chart-container {
-        height: 300px;
-      }
+
+  // 任务看板样式
+  .kanban-board {
+    margin-top: $spacing-8;
+
+    .board-title {
+      margin: 0 0 $spacing-6 0;
+      font-size: $font-size-xl;
+      font-weight: $font-weight-bold;
+      color: $text-primary;
     }
-  }
-  
-  .bottom-section {
-    .activity-card {
-      .card-header {
+
+    .kanban-columns {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: $spacing-6;
+      min-height: 600px;
+    }
+
+    .kanban-column {
+
+      border-radius: $border-radius-lg;
+      padding: $spacing-4;
+      min-height: 100%;
+
+      .column-header {
         display: flex;
         align-items: center;
         justify-content: space-between;
+        margin-bottom: $spacing-4;
+        padding-bottom: $spacing-3;
+        border-bottom: 2px solid #e9ecef;
+
+        .column-title {
+          display: flex;
+          align-items: center;
+          gap: $spacing-2;
+
+          .title-text {
+            font-size: $font-size-lg;
+            font-weight: $font-weight-semibold;
+            color: $text-primary;
+          }
+
+          .task-count {
+            font-size: $font-size-sm;
+            color: $text-secondary;
+            font-weight: normal;
+          }
+        }
+
+        .add-task-btn {
+          opacity: 0.7;
+          transition: opacity $transition-base;
+
+          &:hover {
+            opacity: 1;
+          }
+        }
       }
-      
-      .activity-list {
-        .activity-item {
+
+      .task-list {
+        display: flex;
+        flex-direction: column;
+        gap: $spacing-3;
+        min-height: 500px;
+      }
+
+      .task-card {
+        background: white;
+        border-radius: $border-radius-base;
+        padding: $spacing-4;
+        box-shadow: $shadow-sm;
+        cursor: grab;
+        transition: transform $transition-base, box-shadow $transition-base;
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: $shadow-md;
+        }
+
+        &:active {
+          cursor: grabbing;
+        }
+
+        &.completed {
+          border-left-color: #67C23A;
+          opacity: 0.8;
+
+          .task-title {
+            text-decoration: line-through;
+            color: $text-secondary;
+          }
+        }
+
+        &.overdue {
+          border-left-color: #F56C6C;
+          background: #fef0f0;
+        }
+
+        .task-header {
           display: flex;
           align-items: flex-start;
-          gap: $spacing-3;
-          padding: $spacing-3 0;
-          border-bottom: 1px solid $border-color;
-          
-          &:last-child {
-            border-bottom: none;
-          }
-          
-          .activity-content {
-            flex: 1;
-            
-            .activity-text {
-              font-size: $font-size-sm;
-              color: $text-primary;
-              margin-bottom: $spacing-1;
-              
-              strong {
-                color: $primary-color;
-              }
-            }
-            
-            .activity-time {
-              font-size: $font-size-xs;
-              color: $text-secondary;
-            }
-          }
-        }
-      }
-    }
-    
-    .quick-actions-card {
-      .quick-actions {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: $spacing-4;
-        
-        .action-item {
-          display: flex;
-          align-items: center;
-          gap: $spacing-3;
-          padding: $spacing-4;
-          border-radius: $border-radius-base;
-          cursor: pointer;
-          transition: background-color $transition-base;
-          
-          &:hover {
-            background-color: $gray-50;
-          }
-          
-          .action-icon {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            border-radius: $border-radius-base;
-            
-            .el-icon {
-              font-size: 20px;
-              color: white;
-            }
-            
-            &.project {
-              background: $primary-color;
-            }
-            
-            &.task {
-              background: $success-color;
-            }
-            
-            &.user {
-              background: $warning-color;
-            }
-            
-            &.report {
-              background: $info;
-            }
-          }
-          
-          .action-text {
-            .action-title {
-              font-size: $font-size-sm;
-              font-weight: $font-weight-medium;
-              color: $text-primary;
-              margin-bottom: $spacing-1;
-            }
-            
-            .action-desc {
-              font-size: $font-size-xs;
-              color: $text-secondary;
-            }
-          }
-        }
-      }
-    }
-  }
-}
+          justify-content: space-between;
+          margin-bottom: $spacing-2;
 
-// 响应式设计
-@media (max-width: $breakpoint-lg) {
-  .charts-section {
-    .el-col {
-      margin-bottom: $spacing-6;
+          .task-title {
+            margin: 0;
+            font-size: $font-size-base;
+            font-weight: $font-weight-semibold;
+            color: $text-primary;
+            line-height: 1.4;
+            flex: 1;
+            margin-right: $spacing-2;
+          }
+        }
+
+        .task-description {
+          margin: 0 0 $spacing-3 0;
+          font-size: $font-size-sm;
+          color: $text-secondary;
+          line-height: 1.5;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+
+        .task-meta {
+          margin-bottom: $spacing-3;
+
+          .meta-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: $spacing-1;
+            font-size: $font-size-xs;
+
+            &:last-child {
+              margin-bottom: 0;
+            }
+
+            .meta-label {
+              color: $text-secondary;
+            }
+
+            .meta-value {
+              color: $text-primary;
+              font-weight: $font-weight-medium;
+            }
+          }
+        }
+
+        .task-priority {
+          display: flex;
+          justify-content: flex-end;
+        }
+      }
+
+      // 拖拽时的样式
+      &.drag-over {
+        background: #e3f2fd;
+        border: 2px dashed #2196f3;
+      }
     }
   }
-  
-  .bottom-section {
-    .el-col {
-      margin-bottom: $spacing-6;
-    }
-  }
+
 }
 
 @media (max-width: $breakpoint-md) {
   .stats-grid {
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   }
-  
-  .quick-actions {
-    grid-template-columns: 1fr !important;
+
+  .kanban-board {
+    .kanban-columns {
+      grid-template-columns: 1fr;
+      gap: $spacing-4;
+    }
+
+    .kanban-column {
+      .task-list {
+        min-height: auto;
+      }
+    }
   }
 }
 </style>

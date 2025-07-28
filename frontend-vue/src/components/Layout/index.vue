@@ -1,26 +1,14 @@
 <template>
   <div class="app-layout">
     <!-- 侧边栏 -->
-    <Sidebar
-      :collapsed="sidebarCollapsed"
-      :current-user="currentUser"
-      :unread-message-count="unreadCount"
-      @toggle="toggleSidebar"
-      @user-click="handleUserClick"
-    />
-    
+    <Sidebar :collapsed="sidebarCollapsed" :current-user="currentUser" @toggle="toggleSidebar" />
+
     <!-- 主内容区 -->
     <div class="layout-main">
       <!-- 顶部导航栏 -->
-      <Header
-        :current-user="currentUser"
-        :unread-count="unreadCount"
-        @search="handleSearch"
-        @notification-click="showNotifications"
-        @create="handleCreate"
-        @user-action="handleUserAction"
-      />
-      
+      <Header :current-user="currentUser" :unread-count="unreadCount" @search="handleSearch"
+        @notification-click="showNotifications" @create="handleCreate" @user-action="handleUserAction" />
+
       <!-- 页面内容 -->
       <main class="layout-content">
         <router-view />
@@ -38,6 +26,9 @@ import Header from './Header.vue'
 // import { useUserStore } from '@/stores/user'
 // import { useNotificationStore } from '@/stores/notification'
 
+// 定义组件名称
+defineOptions({ name: 'AppLayout' })
+
 const router = useRouter()
 // const userStore = useUserStore()
 // const notificationStore = useNotificationStore()
@@ -46,12 +37,12 @@ const router = useRouter()
 const sidebarCollapsed = ref(false)
 
 // 计算属性
-const currentUser = computed(() => ({ 
-  id: '1', 
-  name: 'Admin', 
+const currentUser = computed(() => ({
+  id: '1',
+  name: 'Admin',
   email: 'admin@example.com',
-  avatar: '', 
-  role: '管理员' 
+  avatar: '',
+  role: '管理员'
 }))
 const unreadCount = computed(() => 0)
 
@@ -77,14 +68,6 @@ const showNotifications = () => {
  */
 const handleCreate = (type: string) => {
   console.log('新建:', type)
-}
-
-/**
- * 处理用户信息点击
- */
-const handleUserClick = () => {
-  // 显示用户菜单或跳转到用户资料页面
-  router.push('/profile')
 }
 
 const handleUserAction = (command: string) => {

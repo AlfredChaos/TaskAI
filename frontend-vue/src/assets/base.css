@@ -1,37 +1,96 @@
-/* color palette from <https://github.com/vuejs/theme> */
+/* TaskAI 项目配色方案 */
 :root {
-  --vt-c-white: #ffffff;
-  --vt-c-white-soft: #f8f8f8;
-  --vt-c-white-mute: #f2f2f2;
+  /* 基础背景色 */
+  --vt-c-white: white;
+  --vt-c-white-soft: #F9F8F8;
+  --vt-c-white-mute: #F9F8F8;
 
   --vt-c-black: #181818;
   --vt-c-black-soft: #222222;
   --vt-c-black-mute: #282828;
 
-  --vt-c-indigo: #2c3e50;
+  /* 主题色系 */
+  --vt-c-primary: #6C5DD3;        /* 一级主题色：按钮、柱状图、进度条、环形占比图 */
+  --vt-c-secondary: #52CD9F;      /* 二级配色：todo图标、环形占比图、进度条 */
+  --vt-c-danger: #F14A5B;         /* 进度条危险色 */
+  
+  /* 智能报告页配色 */
+  --vt-c-report-bg: #EFF2F4;      /* 浅色背景：报告列表、AI对话气泡、对话框 */
+  --vt-c-report-accent: #377DFF;  /* 深色原色：提示点、人类对话气泡 */
+  
+  /* 深色图标背景色（白色图标） */
+  --vt-c-icon-dark-1: #64CBF4;
+  --vt-c-icon-dark-2: #FF9F38;
+  --vt-c-icon-dark-3: #E391EA;
+  --vt-c-icon-dark-4: #6C5DD3;
+  
+  /* 浅色图标背景色（深色图标） */
+  --vt-c-icon-light-1: #BFF1DF;
+  --vt-c-icon-light-2: #FAE6D2;
+  --vt-c-icon-light-3: #E0F5FD;
+  --vt-c-icon-light-4: #FFECD7;
+  --vt-c-icon-light-5: #BFF1DF;
+  --vt-c-icon-light-6: #EEEFF7;
+  --vt-c-icon-light-7: #F6F2FC;
+  
+  /* 文字颜色 */
+  --vt-c-text-primary: #000000;   /* 主要文字颜色 */
+  --vt-c-text-secondary: #B6B6B6; /* 次级文字颜色 */
 
+  /* 分割线颜色 */
   --vt-c-divider-light-1: rgba(60, 60, 60, 0.29);
   --vt-c-divider-light-2: rgba(60, 60, 60, 0.12);
   --vt-c-divider-dark-1: rgba(84, 84, 84, 0.65);
   --vt-c-divider-dark-2: rgba(84, 84, 84, 0.48);
 
-  --vt-c-text-light-1: var(--vt-c-indigo);
-  --vt-c-text-light-2: rgba(60, 60, 60, 0.66);
+  /* 兼容性文字颜色变量 */
+  --vt-c-text-light-1: var(--vt-c-text-primary);
+  --vt-c-text-light-2: var(--vt-c-text-secondary);
   --vt-c-text-dark-1: var(--vt-c-white);
   --vt-c-text-dark-2: rgba(235, 235, 235, 0.64);
 }
 
-/* semantic color variables for this project */
+/* 语义化颜色变量 */
 :root {
+  /* 背景色 */
   --color-background: var(--vt-c-white);
   --color-background-soft: var(--vt-c-white-soft);
   --color-background-mute: var(--vt-c-white-mute);
+  --color-background-report: var(--vt-c-report-bg);
 
+  /* 主题色 */
+  --color-primary: var(--vt-c-primary);
+  --color-secondary: var(--vt-c-secondary);
+  --color-danger: var(--vt-c-danger);
+  --color-accent: var(--vt-c-report-accent);
+
+  /* 边框色 */
   --color-border: var(--vt-c-divider-light-2);
   --color-border-hover: var(--vt-c-divider-light-1);
 
-  --color-heading: var(--vt-c-text-light-1);
-  --color-text: var(--vt-c-text-light-1);
+  /* 文字色 */
+  --color-heading: var(--vt-c-text-primary);
+  --color-text: var(--vt-c-text-primary);
+  --color-text-secondary: var(--vt-c-text-secondary);
+
+  /* 图标背景色 */
+  --color-icon-bg-1: var(--vt-c-icon-light-1);
+  --color-icon-bg-2: var(--vt-c-icon-light-2);
+  --color-icon-bg-3: var(--vt-c-icon-light-3);
+  --color-icon-bg-4: var(--vt-c-icon-light-4);
+  --color-icon-bg-5: var(--vt-c-icon-light-5);
+  --color-icon-bg-6: var(--vt-c-icon-light-6);
+  --color-icon-bg-7: var(--vt-c-icon-light-7);
+  
+  --color-icon-dark-1: var(--vt-c-icon-dark-1);
+  --color-icon-dark-2: var(--vt-c-icon-dark-2);
+  --color-icon-dark-3: var(--vt-c-icon-dark-3);
+  --color-icon-dark-4: var(--vt-c-icon-dark-4);
+
+  /* 进度条颜色 */
+  --color-progress-primary: var(--vt-c-primary);
+  --color-progress-secondary: var(--vt-c-secondary);
+  --color-progress-danger: var(--vt-c-danger);
 
   --section-gap: 160px;
 }

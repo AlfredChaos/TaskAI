@@ -308,7 +308,11 @@ import {
   MoreFilled
 } from '@element-plus/icons-vue'
 import { formatDate } from '@/utils'
-import type { Task, User as UserType, Project } from '@/types'
+import { taskApi, projectApi } from '@/api'
+import type { Task, Project } from '@/api'
+
+// 组件名称定义
+defineOptions({ name: 'TaskListView' })
 
 const router = useRouter()
 
@@ -331,124 +335,45 @@ const taskStatuses = [
   { value: 'done', label: '已完成', type: 'success' }
 ]
 
-// 模拟项目数据
-const projects = ref<Project[]>([
-  {
-    id: '1',
-    name: '移动端应用开发',
-    description: '',
-    status: 'active',
-    progress: 75,
-    startDate: '2024-01-10',
-    members: [],
-    tasks: [],
-    createdAt: '2024-01-10',
-    updatedAt: '2024-02-20'
-  },
-  {
-    id: '2',
-    name: '企业官网重构',
-    description: '',
-    status: 'completed',
-    progress: 100,
-    startDate: '2023-12-01',
-    members: [],
-    tasks: [],
-    createdAt: '2023-12-01',
-    updatedAt: '2024-02-28'
-  }
-])
+// 响应式数据
+const projects = ref<Project[]>([])
 
-// 模拟用户数据
-const users: UserType[] = [
-  {
-    id: '1',
-    name: '张三',
-    email: 'zhangsan@example.com',
-    avatar: '',
-    role: 'member',
-    status: 'online',
-    createdAt: '2024-01-01',
-    updatedAt: '2024-02-01'
-  },
-  {
-    id: '2',
-    name: '李四',
-    email: 'lisi@example.com',
-    avatar: '',
-    role: 'member',
-    status: 'online',
-    createdAt: '2024-01-01',
-    updatedAt: '2024-02-01'
-  }
-]
+const tasks = ref<Task[]>([])
 
-// 模拟任务数据
-const tasks = ref<Task[]>([
-  {
-    id: '1',
-    title: '设计用户登录界面',
-    description: '设计并实现用户登录页面的UI界面，包括响应式布局',
-    status: 'in-progress',
-    priority: 'high',
-    assignee: users[0],
-    reporter: users[1],
-    projectId: '1',
-    dueDate: '2024-03-15',
-    tags: ['UI设计', '前端'],
-    attachments: [],
-    comments: [],
-    createdAt: '2024-02-01',
-    updatedAt: '2024-02-15'
-  },
-  {
-    id: '2',
-    title: '实现用户认证API',
-    description: '开发用户登录、注册、密码重置等认证相关的API接口',
-    status: 'todo',
-    priority: 'urgent',
-    assignee: users[1],
-    reporter: users[0],
-    projectId: '1',
-    dueDate: '2024-03-10',
-    tags: ['后端', 'API'],
-    attachments: [],
-    comments: [],
-    createdAt: '2024-02-05',
-    updatedAt: '2024-02-10'
-  },
-  {
-    id: '3',
-    title: '数据库性能优化',
-    description: '优化数据库查询性能，添加必要的索引',
-    status: 'review',
-    priority: 'medium',
-    assignee: users[0],
-    reporter: users[1],
-    projectId: '2',
-    dueDate: '2024-03-20',
-    tags: ['数据库', '性能优化'],
-    attachments: [],
-    comments: [],
-    createdAt: '2024-01-20',
-    updatedAt: '2024-02-18'
-  },
-  {
-    id: '4',
-    title: '编写项目文档',
-    description: '编写项目的技术文档和用户手册',
-    status: 'done',
-    priority: 'low',
-    assignee: users[1],
-    reporter: users[0],
-    projectId: '2',
-    tags: ['文档'],
-    attachments: [],
-    comments: [],
-    createdAt: '2024-01-15',
-    updatedAt: '2024-02-20'
+/**
+ * 加载任务列表数据
+ */
+const loadTasks = async () => {
+  try {
+    loading.value = true
+    const response = await taskApi.getTasks({
+      page: currentPage.value,
+      pageSize: pageSize.value,
+      search: searchQuery.value,
+      status: statusFilter.value,
+      priority: priorityFilter.value,
+      projectId: projectFilter.value
+    })
+    tasks.value = response.data.items
+  } catch (error) {
+    console.error('加载任务列表失败:', error)
+    ElMessage.error('加载任务列表失败，请稍后重试')
+  } finally {
+    loading.value = false
   }
-])
+}
+
+/**
+ * 加载项目列表数据
+ */
+const loadProjects = async () => {
+  try {
+    const response = await projectApi.getProjects()
+    projects.value = response.data.items
+  } catch (error) {
+    console.error('加载项目列表失败:', error)
+  }
+}
 
 // 计算属性
 const filteredTasks = computed(() => {
@@ -574,6 +499,7 @@ const getTasksByStatus = (status: string) => {
 
 const handleSearch = () => {
   currentPage.value = 1
+  loadTasks()
 }
 
 const createTask = () => {
@@ -607,13 +533,15 @@ const handleTaskAction = async (command: { action: string; task: Task }) => {
           }
         )
         // 执行删除操作
-        const index = tasks.value.findIndex(t => t.id === task.id)
-        if (index > -1) {
-          tasks.value.splice(index, 1)
-          ElMessage.success('任务删除成功')
+        await taskApi.deleteTask(task.id)
+        ElMessage.success('任务删除成功')
+        // 重新加载任务列表
+        await loadTasks()
+      } catch (error: unknown) {
+        if (error !== 'cancel') {
+          console.error('删除任务失败:', error)
+          ElMessage.error('删除任务失败，请稍后重试')
         }
-      } catch {
-        // 用户取消删除
       }
       break
   }
@@ -622,15 +550,18 @@ const handleTaskAction = async (command: { action: string; task: Task }) => {
 const handleSizeChange = (size: number) => {
   pageSize.value = size
   currentPage.value = 1
+  loadTasks()
 }
 
 const handleCurrentChange = (page: number) => {
   currentPage.value = page
+  loadTasks()
 }
 
 // 生命周期
 onMounted(() => {
-  // 这里可以调用API获取任务数据
+  loadTasks()
+  loadProjects()
 })
 </script>
 

@@ -6,6 +6,7 @@ import CommonEmpty from './CommonEmpty.vue'
 import CommonModal from './CommonModal.vue'
 import CommonButton from './CommonButton.vue'
 import CommonForm from './CommonForm.vue'
+import DevTools from './DevTools.vue'
 
 // 导出所有组件
 export {
@@ -15,7 +16,8 @@ export {
   CommonEmpty,
   CommonModal,
   CommonButton,
-  CommonForm
+  CommonForm,
+  DevTools
 }
 
 // 默认导出
@@ -26,7 +28,8 @@ export default {
   CommonEmpty,
   CommonModal,
   CommonButton,
-  CommonForm
+  CommonForm,
+  DevTools
 }
 
 // 组件类型定义
@@ -43,4 +46,5 @@ export const installCommonComponents = (app: import('vue').App) => {
   app.component('CommonModal', CommonModal)
   app.component('CommonButton', CommonButton)
   app.component('CommonForm', CommonForm)
+  app.component('DevTools', DevTools)
 }

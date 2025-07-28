@@ -1,0 +1,285 @@
+// TaskAI 项目主题样式
+// 基于新的配色方案定制的组件样式
+
+@use "variables" as *;
+
+// 进度条样式
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background-color: $gray-200;
+  border-radius: $border-radius-full;
+  overflow: hidden;
+  
+  &__fill {
+    height: 100%;
+    border-radius: inherit;
+    transition: width $transition-base;
+    
+    &--primary {
+      background-color: $progress-primary;
+    }
+    
+    &--secondary {
+      background-color: $progress-secondary;
+    }
+    
+    &--danger {
+      background-color: $progress-danger;
+    }
+    
+    // 渐变进度条
+    &--gradient {
+      background: linear-gradient(90deg, $progress-primary 0%, $progress-secondary 50%, $progress-danger 100%);
+    }
+  }
+  
+  // 进度条尺寸变体
+  &--small {
+    height: 4px;
+  }
+  
+  &--large {
+    height: 12px;
+  }
+}
+
+// 图标背景样式 - 浅色背景（深色图标）
+.icon-bg {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: $border-radius-base;
+  
+  &--light-1 {
+    background-color: $icon-light-1;
+  }
+  
+  &--light-2 {
+    background-color: $icon-light-2;
+  }
+  
+  &--light-3 {
+    background-color: $icon-light-3;
+  }
+  
+  &--light-4 {
+    background-color: $icon-light-4;
+  }
+  
+  &--light-5 {
+    background-color: $icon-light-5;
+  }
+  
+  &--light-6 {
+    background-color: $icon-light-6;
+  }
+  
+  &--light-7 {
+    background-color: $icon-light-7;
+  }
+}
+
+// 图标背景样式 - 深色背景（白色图标）
+.icon-bg-dark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: $border-radius-base;
+  color: white;
+  
+  &--1 {
+    background-color: $icon-dark-1;
+  }
+  
+  &--2 {
+    background-color: $icon-dark-2;
+  }
+  
+  &--3 {
+    background-color: $icon-dark-3;
+  }
+  
+  &--4 {
+    background-color: $icon-dark-4;
+  }
+}
+
+// 智能报告页样式
+.report {
+  &__background {
+    background-color: $surface-color;
+  }
+  
+  &__card {
+    background-color: $surface-color;
+    border: 1px solid $border-color;
+    border-radius: $border-radius-lg;
+    padding: $spacing-4;
+  }
+  
+  &__chat-bubble {
+    &--ai {
+      background-color: $surface-color;
+      color: $text-primary;
+    }
+    
+    &--human {
+      background-color: $info;
+      color: white;
+    }
+  }
+  
+  &__tip {
+    background-color: $info;
+    color: white;
+    padding: $spacing-2 $spacing-3;
+    border-radius: $border-radius-base;
+    font-size: $font-size-sm;
+  }
+}
+
+// 任务状态样式
+.task-status {
+  display: inline-flex;
+  align-items: center;
+  padding: $spacing-1 $spacing-2;
+  border-radius: $border-radius-base;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  
+  &--todo {
+    background-color: $icon-light-6;
+    color: $text-secondary;
+  }
+  
+  &--in-progress {
+    background-color: $icon-light-1;
+    color: $progress-secondary;
+  }
+  
+  &--completed {
+    background-color: $icon-light-1;
+    color: $progress-primary;
+  }
+  
+  &--overdue {
+    background-color: rgba($progress-danger, 0.1);
+    color: $progress-danger;
+  }
+}
+
+// 环形占比图样式
+.circular-progress {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  
+  &__svg {
+    transform: rotate(-90deg);
+  }
+  
+  &__track {
+    fill: none;
+    stroke: $gray-200;
+    stroke-width: 8;
+  }
+  
+  &__fill {
+    fill: none;
+    stroke-width: 8;
+    stroke-linecap: round;
+    transition: stroke-dasharray $transition-base;
+    
+    &--primary {
+      stroke: $progress-primary;
+    }
+    
+    &--secondary {
+      stroke: $progress-secondary;
+    }
+    
+    &--danger {
+      stroke: $progress-danger;
+    }
+  }
+  
+  &__text {
+    position: absolute;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: $text-primary;
+  }
+}
+
+// 柱状图样式
+.bar-chart {
+  &__bar {
+    transition: all $transition-base;
+    
+    &--primary {
+      fill: $progress-primary;
+    }
+    
+    &--secondary {
+      fill: $progress-secondary;
+    }
+    
+    &--danger {
+      fill: $progress-danger;
+    }
+    
+    &:hover {
+      opacity: 0.8;
+      transform: scaleY(1.05);
+    }
+  }
+}
+
+// 按钮主题样式覆盖
+.btn {
+  &--primary {
+    background-color: $primary-color;
+    border-color: $primary-color;
+    
+    &:hover:not(:disabled) {
+      background-color: $primary-600;
+      border-color: $primary-600;
+    }
+    
+    &:active {
+      background-color: $primary-700;
+      border-color: $primary-700;
+    }
+  }
+  
+  &--secondary {
+    background-color: $secondary-color;
+    border-color: $secondary-color;
+    color: white;
+    
+    &:hover:not(:disabled) {
+      background-color: rgba($secondary-color, 0.9);
+      border-color: rgba($secondary-color, 0.9);
+    }
+  }
+}
+
+// 工具类 - 主题色
+.bg-primary { background-color: $primary-color !important; }
+.bg-secondary { background-color: $secondary-color !important; }
+.bg-danger { background-color: $danger-color !important; }
+.bg-info { background-color: $info !important; }
+.bg-surface { background-color: $surface-color !important; }
+
+.text-primary-color { color: $primary-color !important; }
+.text-secondary-color { color: $secondary-color !important; }
+.text-danger-color { color: $danger-color !important; }
+.text-info-color { color: $info !important; }
+
+// 边框工具类
+.border-primary { border-color: $primary-color !important; }
+.border-secondary { border-color: $secondary-color !important; }
+.border-danger { border-color: $danger-color !important; }
+.border-info { border-color: $info !important; }

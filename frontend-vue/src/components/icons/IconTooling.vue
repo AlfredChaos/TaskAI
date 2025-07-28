@@ -17,3 +17,8 @@
     ></path>
   </svg>
 </template>
+
+<script setup lang="ts">
+// 定义组件名称
+defineOptions({ name: 'IconTooling' })
+</script>

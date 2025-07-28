@@ -8,7 +8,7 @@ import type { ThemeConfig } from '@/types'
 export const useThemeStore = defineStore('theme', () => {
   // 状态
   const mode = ref<'light' | 'dark'>('light')
-  const primaryColor = ref('#409EFF')
+  const primaryColor = ref('#6C5DD3')  // TaskAI 一级主题色
   const sidebarCollapsed = ref(false)
   const isLoading = ref(false)
 
@@ -117,7 +117,7 @@ export const useThemeStore = defineStore('theme', () => {
       if (stored) {
         const config = JSON.parse(stored) as ThemeConfig
         mode.value = config.mode || 'light'
-        primaryColor.value = config.primaryColor || '#409EFF'
+        primaryColor.value = config.primaryColor || '#6C5DD3'
         sidebarCollapsed.value = config.sidebarCollapsed || false
       }
     } catch {
@@ -131,7 +131,7 @@ export const useThemeStore = defineStore('theme', () => {
    */
   const resetTheme = () => {
     mode.value = 'light'
-    primaryColor.value = '#409EFF'
+    primaryColor.value = '#6C5DD3'
     sidebarCollapsed.value = false
     applyTheme()
     saveToStorage()
