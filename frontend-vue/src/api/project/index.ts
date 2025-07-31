@@ -73,10 +73,30 @@ export const projectApi = {
    * 移除项目成员
    * @param projectId 项目ID
    * @param userId 用户ID
-   * @returns 移除结果
+   * @returns 操作结果
    */
   removeMember(projectId: string, userId: string): Promise<ProjectApiResponse> {
     return http.delete(`/projects/${projectId}/members/${userId}`)
+  },
+
+  /**
+   * 获取项目时间线
+   * @param projectId 项目ID
+   * @returns 项目时间线数据
+   */
+  getProjectTimeline(projectId: string): Promise<ProjectApiResponse> {
+    return http.get(`/projects/${projectId}/timeline`)
+  },
+
+  /**
+   * 设置时间线节点为里程碑
+   * @param projectId 项目ID
+   * @param nodeId 节点ID
+   * @param isMilestone 是否为里程碑
+   * @returns 操作结果
+   */
+  setTimelineMilestone(projectId: string, nodeId: string, isMilestone: boolean): Promise<ProjectApiResponse> {
+    return http.patch(`/projects/${projectId}/timeline/${nodeId}/milestone`, { isMilestone })
   }
 }
 

@@ -25,53 +25,25 @@ const routes: RouteRecordRaw[] = [
         path: 'projects',
         name: 'Projects',
         component: () => import('@/views/Projects/index.vue'),
-        meta: { title: '项目', icon: 'Folder' },
-        children: [
-          {
-            path: '',
-            name: 'ProjectList',
-            component: () => import('@/views/Projects/List.vue'),
-            meta: { title: '项目列表' }
-          },
-          {
-            path: ':id',
-            name: 'ProjectDetail',
-            component: () => import('@/views/Projects/Detail.vue'),
-            meta: { title: '项目详情' }
-          },
-          {
-            path: ':id/board',
-            name: 'ProjectBoard',
-            component: () => import('@/views/Projects/Board.vue'),
-            meta: { title: '项目看板' }
-          }
-        ]
+        meta: { title: '项目', icon: 'Folder' }
+      },
+      {
+        path: 'projects/:id',
+        name: 'ProjectDetail',
+        component: () => import('@/views/Projects/Detail.vue'),
+        meta: { title: '项目详情' }
       },
       {
         path: 'tasks',
         name: 'Tasks',
         component: () => import('@/views/Tasks/index.vue'),
-        meta: { title: '任务', icon: 'List' },
-        children: [
-          {
-            path: '',
-            name: 'TaskList',
-            component: () => import('@/views/Tasks/List.vue'),
-            meta: { title: '任务列表' }
-          },
-          {
-            path: ':id',
-            name: 'TaskDetail',
-            component: () => import('@/views/Tasks/Detail.vue'),
-            meta: { title: '任务详情' }
-          }
-        ]
+        meta: { title: '任务', icon: 'List' }
       },
       {
-        path: 'messages',
-        name: 'Messages',
-        component: () => import('@/views/Messages/index.vue'),
-        meta: { title: '消息', icon: 'ChatDotRound' }
+        path: 'reports',
+        name: 'Reports',
+        component: () => import('@/views/Reports/index.vue'),
+        meta: { title: '智能报告', icon: 'ChatLineSquare', requiresAuth: true }
       },
       {
         path: 'activities',

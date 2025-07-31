@@ -18,7 +18,8 @@ export interface Project {
   name: string
   description: string
   category: string
-  status: 'active' | 'completed' | 'paused' | 'cancelled'
+  status: 'active' | 'completed' | 'overdue' | 'cancelled'
+  priority: 'urgent' | 'high' | 'medium' | 'low'
   progress: number
   startDate: string
   endDate?: string
@@ -72,27 +73,7 @@ export interface Attachment {
   createdAt: string
 }
 
-// 消息相关类型
-export interface Message {
-  id: string
-  content: string
-  type: 'text' | 'image' | 'file' | 'system'
-  sender: User
-  receiver?: User
-  channelId?: string
-  isRead: boolean
-  createdAt: string
-}
 
-export interface Channel {
-  id: string
-  name: string
-  type: 'direct' | 'group' | 'project'
-  members: User[]
-  lastMessage?: Message
-  unreadCount: number
-  createdAt: string
-}
 
 // 活动相关类型
 export interface Activity {
@@ -127,6 +108,14 @@ export interface ApiResponse<T = unknown> {
   code: number
   timestamp: string
   data: T
+  meta?: {
+    page: number
+    size: number
+    total: number
+    pages: number
+    has_next: boolean
+    has_prev: boolean
+  }
 }
 
 export interface PaginatedResponse<T = unknown> {
@@ -209,18 +198,31 @@ export interface UploadFile {
 
 // 搜索相关类型
 export interface SearchResult {
-  type: 'project' | 'task' | 'user' | 'message'
+  type: 'project' | 'task' | 'user'
   id: string
   title: string
   description?: string
   url: string
   highlight?: string
 }
-
+// 搜索过滤器类型
 export interface SearchFilters {
   type?: string[]
   dateRange?: [string, string]
   status?: string[]
   assignee?: string[]
   priority?: string[]
+}
+
+// 项目时间线节点类型
+export interface TimelineNode {
+  id: string
+  type: 'project_created' | 'task_completed' | 'project_completed' | 'milestone'
+  title: string
+  description?: string
+  date: string
+  isMilestone: boolean
+  taskId?: string
+  projectId: string
+  createdAt: string
 }

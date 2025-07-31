@@ -1,6 +1,6 @@
 // Mock数据配置
 import { MockMethod } from 'vite-plugin-mock'
-import { users, projects, tasks, messages, activities, notifications } from './data'
+import { users, projects, tasks, activities, notifications } from './data'
 
 // 工具函数
 function success<T>(data: T, message = 'success') {
@@ -225,43 +225,7 @@ const mockApis: MockMethod[] = [
     }
   },
   
-  // 消息相关
-  {
-    url: '/api/messages/channels',
-    method: 'get',
-    response: async () => {
-      await delay()
-      const channels = [
-        {
-          id: 'channel_1',
-          name: '项目讨论',
-          type: 'group',
-          members: users.slice(0, 3),
-          unreadCount: 2,
-          createdAt: '2024-01-01T00:00:00Z'
-        },
-        {
-          id: 'channel_2',
-          name: '技术交流',
-          type: 'group',
-          members: users.slice(1, 4),
-          unreadCount: 0,
-          createdAt: '2024-01-02T00:00:00Z'
-        }
-      ]
-      return success(channels)
-    }
-  },
-  
-  {
-    url: '/api/messages/channels/:channelId/messages',
-    method: 'get',
-    response: async ({ query }) => {
-      await delay()
-      const { page = 1, pageSize = 20 } = query
-      return paginate(messages, Number(page), Number(pageSize))
-    }
-  },
+
   
   // 活动相关
   {
@@ -337,37 +301,63 @@ const mockApis: MockMethod[] = [
     method: 'get',
     response: async ({ query }) => {
       await delay()
-      const { query: searchQuery } = query
+      const { query: searchQuery, type } = query
       
       if (!searchQuery) {
         return success([])
       }
       
-      const results = []
+      const results: Array<{
+        type: 'project' | 'task' | 'user'
+        id: string
+        title: string
+        description?: string
+        url: string
+      }> = []
       
       // 搜索项目
-      const matchedProjects = projects.filter(p => 
-        p.name.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-      results.push(...matchedProjects.map(p => ({
-        type: 'project',
-        id: p.id,
-        title: p.name,
-        description: p.description,
-        url: `/projects/${p.id}`
-      })))
+      if (!type || type.includes('project')) {
+        const matchedProjects = projects.filter(p => 
+          p.name.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+        results.push(...matchedProjects.map(p => ({
+           type: 'project' as const,
+           id: p.id,
+           title: p.name,
+           description: p.description,
+           url: `/projects/${p.id}`
+         })))
+      }
       
       // 搜索任务
-      const matchedTasks = tasks.filter(t => 
-        t.title.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-      results.push(...matchedTasks.map(t => ({
-        type: 'task',
-        id: t.id,
-        title: t.title,
-        description: t.description,
-        url: `/tasks/${t.id}`
-      })))
+      if (!type || type.includes('task')) {
+        const matchedTasks = tasks.filter(t => 
+          t.title.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+        results.push(...matchedTasks.map(t => ({
+           type: 'task' as const,
+           id: t.id,
+           title: t.title,
+           description: t.description,
+           url: `/tasks/${t.id}`
+         })))
+      }
+      
+      // 搜索用户
+      if (!type || type.includes('user')) {
+        users.forEach(user => {
+          if (user.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+              user.email.toLowerCase().includes(searchQuery.toLowerCase())) {
+            results.push({
+               type: 'user' as const,
+               id: user.id,
+               title: user.name,
+               description: user.email,
+               url: `/users/${user.id}`
+             })
+          }
+        })
+      }
       
       return success(results)
     }

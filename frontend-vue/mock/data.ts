@@ -1,5 +1,5 @@
 // Mock数据
-import type { User, Project, Task, Message, Activity, Notification } from '../src/types'
+import type { User, Project, Task, Activity, Notification, TimelineNode } from '../src/types'
 
 // 用户数据
 export const users: User[] = [
@@ -55,6 +55,61 @@ export const users: User[] = [
   }
 ]
 
+// 项目时间线数据
+export const timelineNodes: TimelineNode[] = [
+  {
+    id: 'timeline_1',
+    type: 'project_created',
+    title: '项目创建',
+    description: 'TaskAI项目管理系统正式启动',
+    date: '2024-01-01T00:00:00Z',
+    isMilestone: true,
+    projectId: 'proj_1',
+    createdAt: '2024-01-01T00:00:00Z'
+  },
+  {
+    id: 'timeline_2',
+    type: 'task_completed',
+    title: '设计系统架构任务完成',
+    description: '系统架构设计已完成',
+    date: '2024-01-15T00:00:00Z',
+    isMilestone: false,
+    taskId: 'task_1',
+    projectId: 'proj_1',
+    createdAt: '2024-01-15T00:00:00Z'
+  },
+  {
+    id: 'timeline_3',
+    type: 'project_created',
+    title: '项目创建',
+    description: '移动端应用开发项目启动',
+    date: '2024-02-01T00:00:00Z',
+    isMilestone: true,
+    projectId: 'proj_2',
+    createdAt: '2024-02-01T00:00:00Z'
+  },
+  {
+    id: 'timeline_4',
+    type: 'project_created',
+    title: '项目创建',
+    description: '数据分析平台项目启动',
+    date: '2024-01-15T00:00:00Z',
+    isMilestone: true,
+    projectId: 'proj_3',
+    createdAt: '2024-01-15T00:00:00Z'
+  },
+  {
+    id: 'timeline_5',
+    type: 'project_completed',
+    title: '项目完成',
+    description: '客户关系管理系统项目已完成',
+    date: '2023-12-31T00:00:00Z',
+    isMilestone: true,
+    projectId: 'proj_4',
+    createdAt: '2023-12-31T00:00:00Z'
+  }
+]
+
 // 项目数据
 export const projects: Project[] = [
   {
@@ -63,6 +118,7 @@ export const projects: Project[] = [
     description: '一个现代化的项目管理系统，支持任务管理、团队协作、进度跟踪等功能',
     category: '软件开发',
     status: 'active',
+    priority: 'high',
     progress: 75,
     startDate: '2024-01-01',
     endDate: '2024-06-30',
@@ -77,6 +133,7 @@ export const projects: Project[] = [
     description: '开发一款跨平台的移动端应用，提供便捷的移动办公体验',
     category: '移动开发',
     status: 'active',
+    priority: 'medium',
     progress: 45,
     startDate: '2024-02-01',
     endDate: '2024-08-31',
@@ -88,9 +145,10 @@ export const projects: Project[] = [
   {
     id: 'proj_3',
     name: '数据分析平台',
-    description: '构建企业级数据分析平台，支持实时数据处理和可视化展示',
+    description: "构建一个用于数据可视化的 Web 应用程序",
     category: '数据分析',
-    status: 'paused',
+    status: 'overdue',
+    priority: 'urgent',
     progress: 30,
     startDate: '2024-01-15',
     endDate: '2024-07-15',
@@ -105,6 +163,7 @@ export const projects: Project[] = [
     description: '完善的CRM系统，帮助企业更好地管理客户关系和销售流程',
     category: '企业管理',
     status: 'completed',
+    priority: 'medium',
     progress: 100,
     startDate: '2023-09-01',
     endDate: '2023-12-31',
@@ -119,6 +178,7 @@ export const projects: Project[] = [
     description: '重构现有电商平台，提升性能和用户体验',
     category: '软件开发',
     status: 'active',
+    priority: 'high',
     progress: 60,
     startDate: '2024-01-20',
     endDate: '2024-05-20',
@@ -133,6 +193,7 @@ export const projects: Project[] = [
     description: '基于机器学习的智能推荐系统开发',
     category: '人工智能',
     status: 'active',
+    priority: 'low',
     progress: 25,
     startDate: '2024-02-15',
     endDate: '2024-08-15',
@@ -147,6 +208,7 @@ export const projects: Project[] = [
     description: '营销活动策划和执行管理系统',
     category: '市场营销',
     status: 'completed',
+    priority: 'low',
     progress: 100,
     startDate: '2023-10-01',
     endDate: '2024-01-31',
@@ -161,6 +223,7 @@ export const projects: Project[] = [
     description: '企业财务报表自动化生成系统',
     category: '企业管理',
     status: 'active',
+    priority: 'medium',
     progress: 80,
     startDate: '2023-11-01',
     endDate: '2024-03-31',
@@ -319,54 +382,7 @@ export const tasks: Task[] = [
   }
 ]
 
-// 消息数据
-export const messages: Message[] = [
-  {
-    id: 'msg_1',
-    content: '大家好，项目正式启动了！',
-    type: 'text',
-    sender: users[0],
-    channelId: 'channel_1',
-    isRead: true,
-    createdAt: '2024-01-01T09:00:00Z'
-  },
-  {
-    id: 'msg_2',
-    content: '我已经完成了架构设计文档，请大家review一下',
-    type: 'text',
-    sender: users[1],
-    channelId: 'channel_1',
-    isRead: true,
-    createdAt: '2024-01-01T10:30:00Z'
-  },
-  {
-    id: 'msg_3',
-    content: '收到，我会尽快查看的',
-    type: 'text',
-    sender: users[2],
-    channelId: 'channel_1',
-    isRead: false,
-    createdAt: '2024-01-01T11:00:00Z'
-  },
-  {
-    id: 'msg_4',
-    content: '有什么技术问题可以随时讨论',
-    type: 'text',
-    sender: users[3],
-    channelId: 'channel_2',
-    isRead: true,
-    createdAt: '2024-01-01T14:00:00Z'
-  },
-  {
-    id: 'msg_5',
-    content: '今天的进度很不错，继续加油！',
-    type: 'text',
-    sender: users[0],
-    channelId: 'channel_1',
-    isRead: false,
-    createdAt: '2024-01-01T18:00:00Z'
-  }
-]
+
 
 // 活动数据
 export const activities: Activity[] = [

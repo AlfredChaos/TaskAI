@@ -81,7 +81,7 @@ export const useTaskStore = defineStore('task', () => {
       })
       
       if (response.success) {
-        tasks.value = response.data.items
+        tasks.value = response.data.list
         pagination.value = {
           current: response.data.page,
           pageSize: response.data.pageSize,

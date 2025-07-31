@@ -61,7 +61,7 @@ class Task:
     task_id: str
     project_id: str
     name: str
-    estimated_hours: float  # 以0.5小时为单位
+    estimated_hours: float
     remaining_hours: float
     status: TaskStatus = TaskStatus.PENDING
     due_date: Optional[datetime] = None

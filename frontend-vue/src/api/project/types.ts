@@ -1,12 +1,12 @@
 // 项目相关类型定义
-import type { Project, ApiResponse, PaginatedResponse } from '@/types'
+import type { Project, ApiResponse } from '@/types'
 
 /**
  * 获取项目列表请求参数
  */
 export interface GetProjectsParams {
   page?: number
-  pageSize?: number
+  size?: number
   status?: string
   search?: string
 }
@@ -32,4 +32,4 @@ export interface AddMemberRequest {
  * 项目API响应类型
  */
 export type ProjectApiResponse<T = unknown> = ApiResponse<T>
-export type ProjectPaginatedResponse<T = unknown> = PaginatedResponse<T>
+export type ProjectPaginatedResponse<T = unknown> = ApiResponse<T[]>

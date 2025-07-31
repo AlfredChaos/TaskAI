@@ -19,7 +19,7 @@
 #6C5DD3
 
 浅色图标背景色（深色图标）：
-#BFF1DF+
+#BFF1DF
 #FAE6D2
 #E0F5FD
 #FFECD7

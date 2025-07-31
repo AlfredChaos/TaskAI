@@ -4,7 +4,10 @@
       <!-- 面包屑导航 -->
       <el-breadcrumb separator="/" class="breadcrumb">
         <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-        <el-breadcrumb-item v-if="$route.meta.title">{{ $route.meta.title }}</el-breadcrumb-item>
+        <el-breadcrumb-item v-for="(item, index) in breadcrumbItems" :key="index" 
+          :to="item.path ? { path: item.path } : undefined">
+          {{ item.title }}
+        </el-breadcrumb-item>
       </el-breadcrumb>
     </div>
 
@@ -80,8 +83,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, computed } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import {
   Search,
   Plus,
@@ -124,7 +127,31 @@ interface Emits {
 const emit = defineEmits<Emits>()
 
 const router = useRouter()
+const route = useRoute()
 const searchQuery = ref('')
+
+/**
+ * 生成面包屑导航数据
+ */
+const breadcrumbItems = computed(() => {
+  const items: Array<{ title: string; path?: string }> = []
+  
+  // 根据当前路由生成面包屑
+  if (route.name === 'ProjectDetail') {
+    // 项目详情页：首页 / 项目 / 项目详情
+    items.push({ title: '项目', path: '/projects' })
+    items.push({ title: '项目详情' })
+  } else if (route.name === 'TaskDetail') {
+    // 任务详情页：首页 / 任务 / 任务详情
+    items.push({ title: '任务', path: '/tasks' })
+    items.push({ title: '任务详情' })
+  } else if (route.meta.title) {
+    // 其他页面：显示路由元信息中的标题
+    items.push({ title: route.meta.title as string })
+  }
+  
+  return items
+})
 
 /**
  * 处理搜索
@@ -224,7 +251,7 @@ const handleUserAction = (command: string) => {
 
       :deep(.el-input__wrapper) {
         border-radius: 10px;
-        background-color: $gray-50;
+        background-color: #EFF2F4;
         box-shadow: none;
         border: 1px solid transparent;
         transition: all $transition-base;

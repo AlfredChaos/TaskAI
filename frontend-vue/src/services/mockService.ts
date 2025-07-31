@@ -4,8 +4,8 @@
  */
 
 import { config } from '@/config'
-import type { ApiResponse, PaginatedResponse, Project, Task, TaskStatus } from '@/types'
-import { users, projects, tasks, messages, activities, notifications } from '../../mock/data'
+import type { ApiResponse, Project, Task, TaskStatus } from '@/types'
+import { users, projects, tasks, activities, notifications, timelineNodes } from '../../mock/data'
 
 /**
  * 模拟网络延迟
@@ -46,25 +46,33 @@ function error(message = '操作失败', code = 500): ApiResponse<null> {
 }
 
 /**
- * 分页处理
+ * 分页处理 - 匹配后端API返回格式
  * @param data 数据数组
  * @param page 页码
- * @param pageSize 每页大小
+ * @param size 每页大小
  */
-function paginate<T>(data: T[], page = 1, pageSize = 10): ApiResponse<PaginatedResponse<T>> {
-  const start = (page - 1) * pageSize
-  const end = start + pageSize
+function paginate<T>(data: T[], page = 1, size = 20): ApiResponse<T[]> {
+  const start = (page - 1) * size
+  const end = start + size
   const list = data.slice(start, end)
   
-  const paginatedData: PaginatedResponse<T> = {
-    list,
-    total: data.length,
-    page,
-    pageSize,
-    totalPages: Math.ceil(data.length / pageSize)
-  }
+  const totalPages = Math.ceil(data.length / size)
   
-  return success(paginatedData)
+  return {
+    success: true,
+    message: '获取列表成功',
+    code: 200,
+    timestamp: new Date().toISOString(),
+    data: list,
+    meta: {
+      page,
+      size,
+      total: data.length,
+      pages: totalPages,
+      has_next: page < totalPages,
+      has_prev: page > 1
+    }
+  }
 }
 
 /**
@@ -144,7 +152,7 @@ export class MockService {
     await delay()
     
     if (method === 'GET' && url === '/projects') {
-      const { page = 1, pageSize = 10, status = '', search = '' } = params || {}
+      const { page = 1, size = 20, status = '', search = '' } = params || {}
       
       let filteredProjects = projects
       if (status) {
@@ -158,13 +166,51 @@ export class MockService {
         )
       }
       
-      return paginate(filteredProjects, Number(page), Number(pageSize))
+      return paginate(filteredProjects, Number(page), Number(size))
     }
     
-    if (method === 'GET' && url.includes('/projects/')) {
+    // 获取项目时间线 - 需要放在项目详情之前，避免URL匹配冲突
+    if (method === 'GET' && url.includes('/timeline')) {
+      const projectId = url.split('/')[2]
+      const projectTimeline = timelineNodes.filter(node => node.projectId === projectId)
+        .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+      return success(projectTimeline)
+    }
+    
+    // 获取单个项目详情 - 使用更精确的匹配，排除timeline路径
+    if (method === 'GET' && url.includes('/projects/') && !url.includes('/timeline')) {
       const projectId = url.split('/').pop()
       const project = projects.find(p => p.id === projectId)
-      return project ? success(project) : error('项目不存在', 404)
+      if (!project) {
+        return error('项目不存在', 404)
+      }
+      
+      // 获取项目相关的任务
+      const projectTasks = tasks.filter(t => t.projectId === projectId)
+      
+      // 返回包含任务数据的完整项目信息
+      const projectWithTasks = {
+        ...project,
+        tasks: projectTasks
+      }
+      
+      return success(projectWithTasks)
+    }
+
+    // 设置时间线节点为里程碑
+    if (method === 'PATCH' && url.includes('/timeline/') && url.includes('/milestone')) {
+      const urlParts = url.split('/')
+      const projectId = urlParts[2]
+      const nodeId = urlParts[4]
+      const { isMilestone } = data as { isMilestone: boolean }
+      
+      const nodeIndex = timelineNodes.findIndex(node => node.id === nodeId && node.projectId === projectId)
+      if (nodeIndex === -1) {
+        return error('时间线节点不存在', 404)
+      }
+      
+      timelineNodes[nodeIndex].isMilestone = isMilestone
+      return success(timelineNodes[nodeIndex])
     }
     
     if (method === 'POST' && url === '/projects') {
@@ -175,6 +221,7 @@ export class MockService {
         description: projectData?.description || '',
         category: projectData?.category || '其他',
         status: projectData?.status || 'active',
+        priority: projectData?.priority || 'medium',
         progress: projectData?.progress || 0,
         startDate: projectData?.startDate || new Date().toISOString(),
         endDate: projectData?.endDate,
@@ -313,41 +360,7 @@ export class MockService {
     return error('未找到对应的mock接口', 404)
   }
 
-  /**
-   * 消息相关mock
-   */
-  static async message(method: string, url: string, params?: Record<string, unknown>): Promise<ApiResponse> {
-    await delay()
-    
-    if (url.includes('/messages/channels') && !url.includes('/messages')) {
-      const channels = [
-        {
-          id: 'channel_1',
-          name: '项目讨论',
-          type: 'group',
-          members: users.slice(0, 3),
-          unreadCount: 2,
-          createdAt: '2024-01-01T00:00:00Z'
-        },
-        {
-          id: 'channel_2',
-          name: '技术交流',
-          type: 'group',
-          members: users.slice(1, 4),
-          unreadCount: 0,
-          createdAt: '2024-01-02T00:00:00Z'
-        }
-      ]
-      return success(channels)
-    }
-    
-    if (url.includes('/messages/channels/') && url.includes('/messages')) {
-      const { page = 1, pageSize = 20 } = params || {}
-      return paginate(messages, Number(page), Number(pageSize))
-    }
-    
-    return error('未找到对应的mock接口', 404)
-  }
+
 
   /**
    * 活动相关mock
@@ -574,9 +587,7 @@ export class MockService {
       return this.task(method, cleanUrl, data, params)
     }
     
-    if (cleanUrl.startsWith('/messages')) {
-      return this.message(method, cleanUrl, params)
-    }
+
     
     if (cleanUrl.startsWith('/activities')) {
       return this.activity(method, cleanUrl, params)

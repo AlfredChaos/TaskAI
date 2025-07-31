@@ -118,6 +118,7 @@ async function handleMockRequest<T = unknown>(
     data as Record<string, unknown>,
     params as Record<string, unknown>
   )
+  console.log(`[Mock] Response:`, response)
   
   return response as ApiResponse<T>
 }

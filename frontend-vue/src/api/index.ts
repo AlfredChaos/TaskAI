@@ -8,7 +8,6 @@ export { authApi } from './auth'
 export { userApi } from './user'
 export { projectApi } from './project'
 export { taskApi } from './task'
-export { messageApi } from './message'
 export { activityApi } from './activity'
 export { notificationApi } from './notification'
 export { dashboardApi } from './dashboard'
@@ -20,7 +19,7 @@ export * from './auth/types'
 export * from './user/types'
 export * from './project/types'
 export * from './task/types'
-export * from './message/types'
+
 export * from './activity/types'
 export * from './notification/types'
 export * from './dashboard/types'
@@ -32,8 +31,7 @@ export type {
   User,
   Project,
   Task,
-  Message,
-  Channel,
+
   Activity,
   Notification,
   DashboardStats,

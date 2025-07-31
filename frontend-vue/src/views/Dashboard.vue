@@ -41,7 +41,9 @@
               <span class="detail-value">{{ (stats[0].totalTasks || 0) - (stats[0].completedTasks || 0) }}</span>
             </div>
           </div>
-          <ProgressBar :completed="stats[0].completedTasks || 0" :total="stats[0].totalTasks || 0" color="#64CBF4" />
+          <el-progress
+            :percentage="(stats[0]?.totalTasks || 0) > 0 ? Math.round(((stats[0]?.completedTasks || 0) / (stats[0]?.totalTasks || 0)) * 100) : 0"
+            color="#64CBF4" :stroke-width="6" :show-text="false" />
         </div>
       </div>
 
@@ -70,7 +72,9 @@
               <span class="detail-value">{{ (stats[1].totalTasks || 0) - (stats[1].completedTasks || 0) }}</span>
             </div>
           </div>
-          <ProgressBar :completed="stats[1].completedTasks || 0" :total="stats[1].totalTasks || 0" color="#FF9F38" />
+          <el-progress
+            :percentage="(stats[1]?.totalTasks || 0) > 0 ? Math.round(((stats[1]?.completedTasks || 0) / (stats[1]?.totalTasks || 0)) * 100) : 0"
+            color="#FF9F38" :stroke-width="6" :show-text="false" />
         </div>
       </div>
 
@@ -99,8 +103,9 @@
               <span class="detail-value">{{ (stats[2].totalProjects || 0) - (stats[2].completedProjects || 0) }}</span>
             </div>
           </div>
-          <ProgressBar :completed="stats[2].completedProjects || 0" :total="stats[2].totalProjects || 0"
-            color="#E391EA" />
+          <el-progress
+            :percentage="(stats[2]?.totalProjects || 0) > 0 ? Math.round(((stats[2]?.completedProjects || 0) / (stats[2]?.totalProjects || 0)) * 100) : 0"
+            color="#E391EA" :stroke-width="6" :show-text="false" />
         </div>
       </div>
 
@@ -128,14 +133,15 @@
             </div>
           </div>
           <div class="progress-section">
-            <ProgressBar :completed="stats[3].overdueProjects || 0" :total="projectsTotal || 0"
-              :color="stats[3].iconBg" />
+            <el-progress
+              :percentage="(projectsTotal || 0) > 0 ? Math.round(((stats[3]?.overdueProjects || 0) / (projectsTotal || 0)) * 100) : 0"
+              :color="stats[3]?.iconBg" :stroke-width="6" :show-text="false" />
           </div>
         </div>
       </div>
     </div>
 
-    <!-- 任务看板 -->
+    <!-- 今日任务看板 -->
     <div class="kanban-board">
       <h2 class="board-title">今日任务看板</h2>
       <div class="kanban-columns">
@@ -146,7 +152,7 @@
               <span class="title-text">待办</span>
               <span class="task-count">({{ pendingTasks.length }})</span>
             </div>
-            <el-button type="primary" :icon="Plus" circle size="small" class="add-task-btn"
+            <el-button type="primary" :icon="Plus" size="small" class="add-task-btn"
               @click="openCreateTaskDialog('pending')" />
           </div>
           <div class="task-list">
@@ -200,7 +206,7 @@
               <span class="title-text">已完成</span>
               <span class="task-count">({{ completedTasks.length }})</span>
             </div>
-            <el-button type="success" :icon="Plus" circle size="small" class="add-task-btn"
+            <el-button type="success" :icon="Plus" size="small" class="add-task-btn"
               @click="openCreateTaskDialog('completed')" />
           </div>
           <div class="task-list">
@@ -254,7 +260,7 @@
               <span class="title-text">逾期</span>
               <span class="task-count">({{ overdueTasks.length }})</span>
             </div>
-            <el-button type="danger" :icon="Plus" circle size="small" class="add-task-btn"
+            <el-button type="danger" :icon="Plus" size="small" class="add-task-btn"
               @click="openCreateTaskDialog('overdue')" />
           </div>
           <div class="task-list">
@@ -358,7 +364,7 @@ import {
 import { dashboardApi, authApi, taskApi } from '@/api'
 import type { DashboardStats, User as UserType, Task, CreateTaskRequest } from '@/api'
 import CountUp from '@/components/Common/CountUp.vue'
-import ProgressBar from '@/components/Common/ProgressBar.vue'
+
 import { ElMessageBox, ElDialog, ElForm, ElFormItem, ElInput, ElSelect, ElOption, ElDatePicker, ElInputNumber, ElButton } from 'element-plus'
 
 // 组件名称定义
@@ -397,9 +403,9 @@ const projectsTotal = ref(0)
 const overdueRate = ref(0)
 
 // 任务看板数据
-const pendingTasks = computed(() => allTasks.value.filter(task => task.status === 'pending'))
-const completedTasks = computed(() => allTasks.value.filter(task => task.status === 'completed'))
-const overdueTasks = computed(() => allTasks.value.filter(task => task.status === 'overdue'))
+const pendingTasks = computed(() => todayTasks.value.filter(task => task.status === 'pending'))
+const completedTasks = computed(() => todayTasks.value.filter(task => task.status === 'completed'))
+const overdueTasks = computed(() => todayTasks.value.filter(task => task.status === 'overdue'))
 
 // 当前日期时间
 const currentDate = ref('')
@@ -728,7 +734,7 @@ onMounted(() => {
       align-items: flex-start;
       padding: $spacing-6;
       background: white;
-      border-radius: $border-radius-lg;
+      border-radius: 10px;
       box-shadow: $shadow-sm;
       transition: transform $transition-base, box-shadow $transition-base;
 
@@ -881,7 +887,10 @@ onMounted(() => {
 
         .add-task-btn {
           opacity: 0.7;
+          border-radius: 5px;
           transition: opacity $transition-base;
+          width: 25px;
+          height: 25px;
 
           &:hover {
             opacity: 1;
