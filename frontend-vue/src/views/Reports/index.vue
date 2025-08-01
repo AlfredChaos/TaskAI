@@ -100,48 +100,55 @@
               </el-avatar>
               <!-- AI头像 -->
               <div v-else class="ai-message-avatar">
-                <img :src="getAIProviderLogo(aiProvider)" :alt="aiProvider + ' Logo'" class="ai-provider-logo"
+                <img :src="getAIProviderLogo(message.aiProvider || aiProvider)"
+                  :alt="(message.aiProvider || aiProvider) + ' Logo'" class="ai-provider-logo"
                   @error="handleImageError" />
               </div>
             </div>
-            <div class="message-content">
+            <div class="message-right">
               <!-- AI思考过程 -->
-              <div v-if="message.thinking && message.role === 'assistant'" class="thinking-section">
-                <el-collapse v-model="expandedThinking">
-                  <el-collapse-item title="💭 思考过程" name="thinking">
-                    <div class="thinking-content">{{ message.thinking }}</div>
-                  </el-collapse-item>
-                </el-collapse>
+              <div v-if="message.thinking && message.role === 'assistant'" class="thinking-wrapper">
+                <div class="thinking-header" @click="message.expandedThinking = !message.expandedThinking">
+                  <span class="thinking-title">显示思路</span>
+                  <el-icon class="thinking-toggle" :class="{ expanded: message.expandedThinking }">
+                    <ArrowDown />
+                  </el-icon>
+                </div>
+                <div v-if="message.expandedThinking" class="thinking-content">
+                  <div class="thinking-text">{{ message.thinking }}</div>
+                </div>
               </div>
 
-              <!-- 消息内容 -->
-              <div class="message-text" v-html="renderMarkdown(message.content)"></div>
+              <!-- AI回复内容 - 独立区域 -->
+              <div class="message-content">
+                <div class="message-text" v-html="renderMarkdown(message.content)"></div>
 
-              <!-- 功能按钮（仅AI消息后显示） -->
-              <div v-if="message.role === 'assistant' && message.showActions" class="action-buttons">
-                <el-button type="primary" @click="generateReport('daily')">
-                  <el-icon>
-                    <Calendar />
-                  </el-icon>
-                  生成日报
-                </el-button>
-                <el-button type="primary" @click="generateReport('weekly')">
-                  <el-icon>
-                    <DataAnalysis />
-                  </el-icon>
-                  生成周报
-                </el-button>
+                <!-- 功能按钮（仅AI消息后显示） -->
+                <div v-if="message.role === 'assistant' && message.showActions" class="action-buttons">
+                  <el-button type="primary" @click="generateReport('daily')">
+                    <el-icon>
+                      <Calendar />
+                    </el-icon>
+                    生成日报
+                  </el-button>
+                  <el-button type="primary" @click="generateReport('weekly')">
+                    <el-icon>
+                      <DataAnalysis />
+                    </el-icon>
+                    生成周报
+                  </el-button>
+                </div>
               </div>
-            </div>
 
-            <!-- 消息元信息 -->
-            <div class="message-meta">
-              <span v-if="message.tokens" class="token-count">{{ message.tokens }} tokens</span>
-              <el-button type="text" size="small" @click="copyMessage(message.content)">
-                <el-icon>
-                  <CopyDocument />
-                </el-icon>
-              </el-button>
+              <!-- 消息元信息 -->
+              <div class="message-meta">
+                <el-button type="text" size="small" @click="copyMessage(message.content)">
+                  <el-icon>
+                    <CopyDocument />
+                  </el-icon>
+                </el-button>
+                <span v-if="message.tokens" class="token-count">{{ message.tokens }} tokens</span>
+              </div>
             </div>
           </div>
         </div>
@@ -149,11 +156,20 @@
         <!-- 流式输出指示器 -->
         <div v-if="isStreaming" class="streaming-indicator">
           <div class="message ai-message">
-            <div class="message-content">
-              <div class="typing-dots">
-                <span></span>
-                <span></span>
-                <span></span>
+            <!-- AI头像 -->
+            <div class="message-avatar">
+              <div class="ai-message-avatar">
+                <img :src="getAIProviderLogo(aiProvider)" :alt="aiProvider + ' Logo'" class="ai-provider-logo"
+                  @error="handleImageError" />
+              </div>
+            </div>
+            <div class="message-right">
+              <div class="message-content">
+                <div class="typing-dots">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
               </div>
             </div>
           </div>
@@ -162,8 +178,8 @@
 
       <!-- 聊天输入区域 -->
       <div class="chat-input">
-        <el-input v-model="inputMessage" type="textarea" :rows="3" placeholder="输入消息... 使用@提及项目或任务"
-          @keydown.ctrl.enter="sendMessage" @input="handleInputChange" />
+        <el-input v-model="inputMessage" type="textarea" :autosize="{ minRows: 3, maxRows: 6 }"
+          placeholder="输入消息... 使用@提及项目或任务，按Enter发送" @keydown.enter="sendMessage" @input="handleInputChange" />
 
         <!-- @提及建议 -->
         <div v-if="showMentions" class="mentions-popup">
@@ -171,12 +187,6 @@
             <span class="mention-icon">{{ item.type === 'project' ? '📁' : '📋' }}</span>
             <span>{{ item.name }}</span>
           </div>
-        </div>
-
-        <div class="input-actions">
-          <el-button type="primary" @click="sendMessage" :disabled="!inputMessage.trim() || isStreaming">
-            发送
-          </el-button>
         </div>
       </div>
     </div>
@@ -265,7 +275,8 @@ import {
   DataAnalysis,
   Delete,
   Setting,
-  CopyDocument
+  CopyDocument,
+  ArrowDown
 } from '@element-plus/icons-vue'
 import MarkdownIt from 'markdown-it'
 import { getNameInitials } from '@/utils'
@@ -292,7 +303,6 @@ const editingContent = ref('')
 const inputMessage = ref('')
 const isTyping = ref(false)
 const isStreaming = ref(false)
-const expandedThinking = ref<string[]>([])
 const showMentions = ref(false)
 const aiProvider = ref('DeepSeek')
 const messagesContainer = ref<HTMLElement>()
@@ -315,6 +325,8 @@ interface Message {
   thinking?: string
   tokens?: number
   showActions?: boolean
+  expandedThinking?: boolean
+  aiProvider?: string // 记录消息创建时的AI供应商
 }
 
 // 新报告表单
@@ -348,8 +360,10 @@ const messages = ref<Message[]>([
   {
     id: '1',
     role: 'assistant',
-    content: '你好！我是智能报告助手，可以帮助你生成工作日报和周报。我能够：\n\n- 📊 分析你的项目进度和任务完成情况\n- 📝 自动生成结构化的日报和周报\n- 🔍 整理工作亮点和待改进事项\n- 📈 提供数据驱动的工作洞察\n\n请选择你需要的服务，或者直接告诉我你的需求！',
-    showActions: true
+    content: '你好！我是智能报告助手，可以帮助你生成工作日报和周报。我能够：\n\n - 📊 分析你的项目进度和任务完成情况\n- 📝 自动生成结构化的日报和周报\n- 🔍 整理工作亮点和待改进事项\n- 📈 提供数据驱动的工作洞察\n\n请选择你需要的服务，或者直接告诉我你的需求！',
+    showActions: true,
+    expandedThinking: false,
+    aiProvider: 'DeepSeek'
   }
 ])
 
@@ -524,14 +538,20 @@ const deleteReport = async () => {
 /**
  * 发送消息
  */
-const sendMessage = () => {
+const sendMessage = (event?: KeyboardEvent) => {
+  // 如果是键盘事件，阻止默认行为（防止换行）
+  if (event) {
+    event.preventDefault()
+  }
+
   if (!inputMessage.value.trim() || isStreaming.value) return
 
   // 添加用户消息
   const userMessage: Message = {
     id: Date.now().toString(),
     role: 'user',
-    content: inputMessage.value
+    content: inputMessage.value,
+    expandedThinking: false
   }
 
   messages.value.push(userMessage)
@@ -561,7 +581,9 @@ const simulateAIResponse = async () => {
     role: 'assistant',
     content: '我理解你的需求。让我为你生成一份详细的报告。',
     thinking: '用户询问了关于报告生成的问题，我需要分析当前的项目和任务数据，然后生成相应的报告内容。',
-    tokens: 156
+    tokens: 156,
+    expandedThinking: false,
+    aiProvider: aiProvider.value
   }
 
   messages.value.push(aiMessage)
@@ -591,7 +613,9 @@ const generateReport = async (type: 'daily' | 'weekly') => {
     id: Date.now().toString(),
     role: 'assistant',
     content: `我为你生成了一份${type === 'daily' ? '日报' : '周报'}，请查看：\n\n${reportContent}\n\n你可以对内容进行修改，确认后我会帮你保存。`,
-    tokens: 234
+    tokens: 234,
+    expandedThinking: false,
+    aiProvider: aiProvider.value
   }
 
   messages.value.push(aiMessage)
@@ -645,16 +669,23 @@ const copyMessage = async (content: string) => {
  */
 const clearContext = async () => {
   try {
-    await ElMessageBox.confirm('确定要清除所有聊天记录吗？', '确认清除', {
-      type: 'warning'
-    })
+    await ElMessageBox.confirm(
+      '确定要清除所有聊天记录吗？',
+      '确认清除',
+      {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
 
     messages.value = [
       {
         id: '1',
         role: 'assistant',
         content: '你好！我是智能报告助手，可以帮助你生成工作日报和周报。我能够：\n\n- 📊 分析你的项目进度和任务完成情况\n- 📝 自动生成结构化的日报和周报\n- 🔍 整理工作亮点和待改进事项\n- 📈 提供数据驱动的工作洞察\n\n请选择你需要的服务，或者直接告诉我你的需求！',
-        showActions: true
+        showActions: true,
+        expandedThinking: false,
+        aiProvider: aiProvider.value
       }
     ]
 
@@ -692,8 +723,6 @@ const handleImageError = (event: Event) => {
   img.src = deepseekLogo // 使用默认图片
 }
 
-
-
 /**
  * 滚动到聊天底部
  */
@@ -703,6 +732,24 @@ const scrollToBottom = () => {
   }
 }
 
+// 修改弹出组件样式
+const style = document.createElement('style')
+style.innerHTML = `
+.el-message-box {
+  border-radius: 10px;
+
+  .el-button {
+    border-radius: 10px;
+  }
+  
+  .el-button--primary {
+    border: none;
+    box-shadow: none;
+  }
+}
+`
+document.body.appendChild(style)
+
 // 组件挂载时的初始化
 onMounted(() => {
   // 初始化逻辑
@@ -710,6 +757,19 @@ onMounted(() => {
 </script>
 
 <style scoped>
+:deep(.el-dialog) {
+  border-radius: 10px;
+
+  .el-button {
+    border-radius: 10px;
+  }
+
+  .el-button--primary {
+    border: none;
+    box-shadow: none;
+  }
+}
+
 .reports-container {
   display: flex;
   border-radius: 10px;
@@ -744,6 +804,8 @@ onMounted(() => {
     height: 40px;
     line-height: 40px;
     border-radius: 10px;
+    box-shadow: none;
+    border: none;
   }
 }
 
@@ -763,7 +825,7 @@ onMounted(() => {
 .reports-list {
   flex: 1;
   overflow-y: auto;
-  padding: 10px;
+  padding: 20px;
 }
 
 .report-card {
@@ -872,8 +934,9 @@ onMounted(() => {
 }
 
 .typing-indicator {
+  margin-left: 10px;
   font-size: 12px;
-  color: #409eff;
+  color: gray;
   font-weight: normal;
 }
 
@@ -939,46 +1002,120 @@ onMounted(() => {
 }
 
 .ai-message .message-content {
-  background: #f5f5f5;
   color: #333;
-  padding: 12px 16px;
   border-radius: 18px 18px 18px 4px;
+  max-width: 100%;
 }
 
-.thinking-section {
-  margin-bottom: 10px;
+.message-right {
+  margin-top: 8px;
+  margin-left: 16px;
+}
+
+/* 思考过程样式 */
+.thinking-wrapper {
+  margin-bottom: 12px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.thinking-header {
+  width: 100px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background-color: #f2f2f2;
+  cursor: pointer;
+  user-select: none;
+  border-radius: 10px;
+}
+
+.thinking-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: black;
+}
+
+.thinking-toggle {
+  transition: transform 0.3s ease;
+}
+
+.thinking-toggle.expanded {
+  transform: rotate(180deg);
 }
 
 .thinking-content {
-  font-size: 12px;
+  padding: 0;
+  overflow: hidden;
+  background: white;
+}
+
+.thinking-text {
+  margin-top: 16px;
+  padding-left: 10px;
+  font-size: 13px;
   color: #666;
-  font-style: italic;
-  padding: 8px;
-  background: #f9f9f9;
-  border-radius: 4px;
+  line-height: 1.5;
+  border-left: 2px solid #ddd;
+  background: white;
 }
 
 .message-text {
   line-height: 1.6;
 }
 
+/* Markdown渲染内容样式 */
+.message-text ul,
+.message-text ol {
+  padding-left: 20px;
+  margin: 10px 0;
+  margin-left: 20px;
+}
+
 .action-buttons {
   margin-top: 15px;
   display: flex;
   gap: 10px;
+
+  .el-button {
+    border-radius: 10px;
+    border: none;
+    box-shadow: none;
+
+    .el-icon {
+      margin-right: 4px;
+    }
+
+    &::after {
+      display: none;
+    }
+  }
 }
 
 .message-meta {
-  margin-top: 8px;
+  margin-top: 4px;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   font-size: 12px;
   color: #999;
+
+  .el-button--small {
+    padding-left: 0;
+    padding-right: 10px;
+    font-size: 16px;
+  }
+
+  .el-icon {
+    color: gray;
+  }
 }
 
 .token-count {
-  font-size: 11px;
+  font-size: 16px;
+  font-weight: 200;
+  color: gray;
 }
 
 .streaming-indicator {
@@ -1022,8 +1159,16 @@ onMounted(() => {
 
 .chat-input {
   padding: 20px;
-  border-top: 1px solid #e0e0e0;
   position: relative;
+
+  :deep(.el-textarea__inner) {
+    border-radius: 20px;
+    background: #EFF2F4;
+    border: none;
+    box-shadow: none;
+    padding: 20px;
+    color: black;
+  }
 }
 
 .mentions-popup {

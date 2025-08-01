@@ -4,7 +4,7 @@
       <!-- 面包屑导航 -->
       <el-breadcrumb separator="/" class="breadcrumb">
         <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-        <el-breadcrumb-item v-for="(item, index) in breadcrumbItems" :key="index" 
+        <el-breadcrumb-item v-for="(item, index) in breadcrumbItems" :key="index"
           :to="item.path ? { path: item.path } : undefined">
           {{ item.title }}
         </el-breadcrumb-item>
@@ -135,7 +135,7 @@ const searchQuery = ref('')
  */
 const breadcrumbItems = computed(() => {
   const items: Array<{ title: string; path?: string }> = []
-  
+
   // 根据当前路由生成面包屑
   if (route.name === 'ProjectDetail') {
     // 项目详情页：首页 / 项目 / 项目详情
@@ -149,7 +149,7 @@ const breadcrumbItems = computed(() => {
     // 其他页面：显示路由元信息中的标题
     items.push({ title: route.meta.title as string })
   }
-  
+
   return items
 })
 
