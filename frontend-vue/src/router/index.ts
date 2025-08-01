@@ -45,12 +45,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('@/views/Reports/index.vue'),
         meta: { title: '智能报告', icon: 'ChatLineSquare', requiresAuth: true }
       },
-      {
-        path: 'activities',
-        name: 'Activities',
-        component: () => import('@/views/Activities/index.vue'),
-        meta: { title: '活动', icon: 'Clock' }
-      },
+
       {
         path: 'profile',
         name: 'Profile',

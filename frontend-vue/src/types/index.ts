@@ -75,20 +75,7 @@ export interface Attachment {
 
 
 
-// 活动相关类型
-export interface Activity {
-  id: string
-  type: 'task_created' | 'task_updated' | 'task_completed' | 'comment_added' | 'file_uploaded' | 'user_joined'
-  description: string
-  actor: User
-  target?: {
-    type: 'task' | 'project' | 'user'
-    id: string
-    name: string
-  }
-  metadata?: Record<string, unknown>
-  createdAt: string
-}
+
 
 // 通知类型
 export interface Notification {
@@ -164,7 +151,7 @@ export interface DashboardStats {
   completedTasks: number
   pendingTasks: number
   teamMembers: number
-  recentActivities: Activity[]
+
   // 新增字段
   todayCompletedTasks?: number
   todayTotalTasks?: number

@@ -49,13 +49,7 @@
           <span>报告</span>
         </el-menu-item>
 
-        <!-- 活动记录 -->
-        <el-menu-item index="/events">
-          <el-icon>
-            <BellFilled />
-          </el-icon>
-          <span>事件</span>
-        </el-menu-item>
+
 
         <!-- 设置 -->
         <el-menu-item index="/settings">

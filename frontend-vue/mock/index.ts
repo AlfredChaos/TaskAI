@@ -1,6 +1,6 @@
 // Mock数据配置
 import { MockMethod } from 'vite-plugin-mock'
-import { users, projects, tasks, activities, notifications } from './data'
+import { users, projects, tasks, notifications } from './data'
 
 // 工具函数
 function success<T>(data: T, message = 'success') {
@@ -227,16 +227,7 @@ const mockApis: MockMethod[] = [
   
 
   
-  // 活动相关
-  {
-    url: '/api/activities',
-    method: 'get',
-    response: async ({ query }) => {
-      await delay()
-      const { page = 1, pageSize = 10 } = query
-      return paginate(activities, Number(page), Number(pageSize))
-    }
-  },
+
   
   // 通知相关
   {
@@ -261,7 +252,7 @@ const mockApis: MockMethod[] = [
         completedTasks: tasks.filter(t => t.status === 'done').length,
         pendingTasks: tasks.filter(t => t.status !== 'done').length,
         teamMembers: users.length,
-        recentActivities: activities.slice(0, 5)
+
       })
     }
   },

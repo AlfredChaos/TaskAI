@@ -8,7 +8,7 @@ export { authApi } from './auth'
 export { userApi } from './user'
 export { projectApi } from './project'
 export { taskApi } from './task'
-export { activityApi } from './activity'
+
 export { notificationApi } from './notification'
 export { dashboardApi } from './dashboard'
 export { searchApi } from './search'
@@ -20,7 +20,7 @@ export * from './user/types'
 export * from './project/types'
 export * from './task/types'
 
-export * from './activity/types'
+
 export * from './notification/types'
 export * from './dashboard/types'
 export * from './search/types'
@@ -32,7 +32,7 @@ export type {
   Project,
   Task,
 
-  Activity,
+
   Notification,
   DashboardStats,
   ApiResponse,

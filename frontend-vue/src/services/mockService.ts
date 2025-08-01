@@ -5,7 +5,7 @@
 
 import { config } from '@/config'
 import type { ApiResponse, Project, Task, TaskStatus } from '@/types'
-import { users, projects, tasks, activities, notifications, timelineNodes } from '../../mock/data'
+import { users, projects, tasks, notifications, timelineNodes } from '../../mock/data'
 
 /**
  * 模拟网络延迟
@@ -362,19 +362,7 @@ export class MockService {
 
 
 
-  /**
-   * 活动相关mock
-   */
-  static async activity(method: string, url: string, params?: Record<string, unknown>): Promise<ApiResponse> {
-    await delay()
-    
-    if (method === 'GET' && url === '/activities') {
-      const { page = 1, pageSize = 10 } = params || {}
-      return paginate(activities, Number(page), Number(pageSize))
-    }
-    
-    return error('未找到对应的mock接口', 404)
-  }
+
 
   /**
    * 通知相关mock
@@ -441,7 +429,7 @@ export class MockService {
         completedTasks: allCompletedTasks,
         pendingTasks: allTotalTasks - allCompletedTasks,
         teamMembers: users.length,
-        recentActivities: activities.slice(0, 5)
+
       })
     }
     
@@ -589,9 +577,7 @@ export class MockService {
     
 
     
-    if (cleanUrl.startsWith('/activities')) {
-      return this.activity(method, cleanUrl, params)
-    }
+
     
     if (cleanUrl.startsWith('/notifications')) {
       return this.notification(method, cleanUrl, params)

@@ -1,5 +1,5 @@
 // Mock数据
-import type { User, Project, Task, Activity, Notification, TimelineNode } from '../src/types'
+import type { User, Project, Task, Notification, TimelineNode } from '../src/types'
 
 // 用户数据
 export const users: User[] = [
@@ -384,74 +384,7 @@ export const tasks: Task[] = [
 
 
 
-// 活动数据
-export const activities: Activity[] = [
-  {
-    id: 'activity_1',
-    type: 'task_created',
-    description: '创建了新任务',
-    actor: users[0],
-    target: {
-      type: 'task',
-      id: 'task_1',
-      name: '设计系统架构'
-    },
-    metadata: {},
-    createdAt: '2024-01-01T09:00:00Z'
-  },
-  {
-    id: 'activity_2',
-    type: 'task_updated',
-    description: '更新了任务状态',
-    actor: users[1],
-    target: {
-      type: 'task',
-      id: 'task_2',
-      name: '实现用户认证功能'
-    },
-    metadata: { from: 'todo', to: 'in-progress' },
-    createdAt: '2024-01-01T10:30:00Z'
-  },
-  {
-    id: 'activity_3',
-    type: 'comment_added',
-    description: '添加了评论',
-    actor: users[2],
-    target: {
-      type: 'task',
-      id: 'task_3',
-      name: '设计UI界面'
-    },
-    metadata: {},
-    createdAt: '2024-01-01T11:15:00Z'
-  },
-  {
-    id: 'activity_4',
-    type: 'user_joined',
-    description: '加入了项目',
-    actor: users[4],
-    target: {
-      type: 'project',
-      id: 'proj_2',
-      name: '移动端应用开发'
-    },
-    metadata: {},
-    createdAt: '2024-01-01T14:00:00Z'
-  },
-  {
-    id: 'activity_5',
-    type: 'task_completed',
-    description: '完成了任务',
-    actor: users[0],
-    target: {
-      type: 'task',
-      id: 'task_1',
-      name: '设计系统架构'
-    },
-    metadata: {},
-    createdAt: '2024-01-01T17:30:00Z'
-  }
-]
+
 
 // 通知数据
 export const notifications: Notification[] = [
