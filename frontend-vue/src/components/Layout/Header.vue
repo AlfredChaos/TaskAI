@@ -61,7 +61,7 @@
               <el-icon>
                 <User />
               </el-icon>
-              个人资料
+              我的帐户
             </el-dropdown-item>
             <el-dropdown-item command="settings">
               <el-icon>
