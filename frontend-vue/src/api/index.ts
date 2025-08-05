@@ -8,7 +8,7 @@ export { authApi } from './auth'
 export { userApi } from './user'
 export { projectApi } from './project'
 export { taskApi } from './task'
-
+export { providerApi, modelApi } from './ai'
 export { notificationApi } from './notification'
 export { dashboardApi } from './dashboard'
 export { searchApi } from './search'
@@ -31,8 +31,8 @@ export type {
   User,
   Project,
   Task,
-
-
+  ModelProvider,
+  ProviderModel,
   Notification,
   DashboardStats,
   ApiResponse,

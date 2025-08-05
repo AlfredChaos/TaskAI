@@ -6,6 +6,38 @@
     </div>
 
     <div class="settings-content">
+      <!-- 模型供应商 -->
+      <div class="settings-section">
+        <div class="section-header">
+          <h2 class="section-title">模型供应商</h2>
+          <p class="section-description">配置您的模型供应商</p>
+        </div>
+
+        <div class="setting-card">
+          <div class="setting-item">
+            <label class="setting-label">默认供应商</label>
+            <el-select v-model="selectedProvider" placeholder="选择默认供应商" class="setting-select"
+              @change="onProviderChange">
+              <el-option v-for="provider in activeProviders" :key="provider.id" :label="provider.name"
+                :value="provider.id" />
+            </el-select>
+          </div>
+
+          <div class="setting-item">
+            <label class="setting-label">系统模型</label>
+            <el-select v-model="selectedModel" placeholder="选择系统模型" class="setting-select">
+              <el-option v-for="model in models" :key="model.id" :label="model.id" :value="model.id" />
+            </el-select>
+          </div>
+
+          <div class="setting-actions">
+            <el-button type="primary" class="save-btn" @click="openProviderDrawer">
+              设置模型供应商
+            </el-button>
+          </div>
+        </div>
+      </div>
+
       <!-- 工作日设置 -->
       <div class="settings-section">
         <div class="section-header">
@@ -98,13 +130,76 @@
         </div>
       </div>
     </div>
+
+    <!-- 模型供应商管理抽屉 -->
+    <el-drawer v-model="drawerVisible" title="模型供应商管理" direction="rtl" :with-header="false" size="40%"
+      class="provider-drawer">
+      <div class="drawer-content">
+        <div class="drawer-header">
+          <el-button type="primary" @click="openProviderForm()">
+            添加供应商
+          </el-button>
+        </div>
+
+        <div class="provider-list">
+          <div v-for="provider in providers" :key="provider.id" class="provider-card">
+            <div class="provider-info">
+              <div class="provider-header">
+                <h3 class="provider-name">{{ provider.name }}</h3>
+                <div class="provider-badges">
+                  <el-tag v-if="provider.is_default" type="success" size="small">默认</el-tag>
+                  <el-tag v-if="provider.is_active" type="primary" size="small">活跃</el-tag>
+                  <el-tag v-else type="info" size="small">禁用</el-tag>
+                </div>
+              </div>
+              <p class="provider-url">{{ provider.base_url }}</p>
+              <p class="provider-time">创建时间: {{ formatDateTime(provider.created_at) }}</p>
+            </div>
+            <div class="provider-actions">
+              <el-button v-if="!provider.is_default" type="success" size="small"
+                @click="setDefaultProvider(provider.id)">
+                设为默认
+              </el-button>
+              <el-button type="primary" size="small" @click="openProviderForm(provider)">
+                编辑
+              </el-button>
+              <el-button v-if="!provider.is_default" type="danger" size="small" @click="deleteProvider(provider.id)">
+                删除
+              </el-button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </el-drawer>
+
+    <!-- 供应商表单对话框 -->
+    <el-dialog v-model="formDialogVisible" :title="editingProvider ? '编辑供应商' : '添加供应商'" width="500px"
+      class="provider-dialog">
+      <el-form :model="providerForm" label-width="100px">
+        <el-form-item label="供应商名称" required>
+          <el-input v-model="providerForm.name" placeholder="请输入供应商名称" />
+        </el-form-item>
+        <el-form-item label="API地址" required>
+          <el-input v-model="providerForm.base_url" placeholder="请输入API地址" />
+        </el-form-item>
+        <el-form-item label="状态">
+          <el-switch v-model="providerForm.is_active" active-text="启用" inactive-text="禁用" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="formDialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="saveProvider">保存</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { ElMessage } from 'element-plus'
+import { ref, onMounted, computed } from 'vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import { defineOptions } from 'vue'
+import { providerApi, modelApi } from '@/api/ai'
+import type { ModelProvider, ProviderModel } from '@/types'
 
 // Name
 defineOptions({ name: 'SettingsPage' })
@@ -127,6 +222,12 @@ interface NewHoliday {
   reason: string
 }
 
+interface ProviderForm {
+  name: string
+  base_url: string
+  is_active: boolean
+}
+
 // 响应式数据
 const workSettings = ref<WorkSettings>({
   workDays: '1-5',
@@ -140,6 +241,176 @@ const newHoliday = ref<NewHoliday>({
 })
 
 const holidays = ref<Holiday[]>([])
+
+// 模型供应商相关数据
+const providers = ref<ModelProvider[]>([])
+const models = ref<ProviderModel[]>([])
+const selectedProvider = ref<string>('')
+const selectedModel = ref<string>('')
+const drawerVisible = ref(false)
+const providerForm = ref<ProviderForm>({
+  name: '',
+  base_url: '',
+  is_active: true
+})
+const editingProvider = ref<ModelProvider | null>(null)
+const formDialogVisible = ref(false)
+
+// 计算属性
+const defaultProvider = computed(() => {
+  return providers.value.find(p => p.is_default)
+})
+
+const activeProviders = computed(() => {
+  return providers.value.filter(p => p.is_active)
+})
+
+/**
+ * 加载供应商列表
+ */
+const loadProviders = async () => {
+  try {
+    const response = await providerApi.list()
+    providers.value = response.data || []
+
+    // 设置默认选中的供应商
+    const defaultProv = defaultProvider.value
+    if (defaultProv) {
+      selectedProvider.value = defaultProv.id
+      await loadModels(defaultProv.id)
+    }
+  } catch (error) {
+    ElMessage.error('加载供应商列表失败')
+    console.error('Load providers error:', error)
+  }
+}
+
+/**
+ * 加载模型列表
+ */
+const loadModels = async (providerId: string) => {
+  try {
+    const response = await modelApi.getAvailableModels({ provider_id: providerId })
+    models.value = response.data || []
+  } catch (error) {
+    ElMessage.error('加载模型列表失败')
+    console.error('Load models error:', error)
+  }
+}
+
+/**
+ * 供应商变更处理
+ */
+const onProviderChange = async (providerId: string) => {
+  if (providerId) {
+    await loadModels(providerId)
+    // 清空已选择的模型
+    selectedModel.value = ''
+  }
+}
+
+/**
+ * 打开供应商抽屉
+ */
+const openProviderDrawer = () => {
+  drawerVisible.value = true
+}
+
+/**
+ * 打开供应商表单
+ */
+const openProviderForm = (provider?: ModelProvider) => {
+  if (provider) {
+    editingProvider.value = provider
+    providerForm.value = {
+      name: provider.name,
+      base_url: provider.base_url,
+      is_active: provider.is_active
+    }
+  } else {
+    editingProvider.value = null
+    providerForm.value = {
+      name: '',
+      base_url: '',
+      is_active: true
+    }
+  }
+  formDialogVisible.value = true
+}
+
+/**
+ * 保存供应商
+ */
+const saveProvider = async () => {
+  try {
+    if (!providerForm.value.name.trim() || !providerForm.value.base_url.trim()) {
+      ElMessage.error('请填写完整的供应商信息')
+      return
+    }
+
+    if (editingProvider.value) {
+      // 更新供应商
+      await providerApi.update(editingProvider.value.id, providerForm.value)
+      ElMessage.success('供应商更新成功')
+    } else {
+      // 创建供应商
+      await providerApi.create(providerForm.value)
+      ElMessage.success('供应商创建成功')
+    }
+
+    formDialogVisible.value = false
+    await loadProviders()
+  } catch (error) {
+    ElMessage.error('保存供应商失败')
+    console.error('Save provider error:', error)
+  }
+}
+
+/**
+ * 设置默认供应商
+ */
+const setDefaultProvider = async (providerId: string) => {
+  try {
+    await providerApi.setDefault(providerId)
+    ElMessage.success('默认供应商设置成功')
+    await loadProviders()
+    selectedProvider.value = providerId
+    await loadModels(providerId)
+  } catch (error) {
+    ElMessage.error('设置默认供应商失败')
+    console.error('Set default provider error:', error)
+  }
+}
+
+/**
+ * 删除供应商
+ */
+const deleteProvider = async (providerId: string) => {
+  try {
+    await ElMessageBox.confirm('确定要删除这个供应商吗？', '确认删除', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning'
+    })
+
+    await providerApi.delete(providerId)
+    ElMessage.success('供应商删除成功')
+    await loadProviders()
+  } catch (error) {
+    if (error !== 'cancel') {
+      ElMessage.error('删除供应商失败')
+      console.error('Delete provider error:', error)
+    }
+  }
+}
+
+/**
+ * 格式化日期时间
+ */
+const formatDateTime = (dateStr: string): string => {
+  const date = new Date(dateStr)
+  return date.toLocaleString('zh-CN')
+}
 
 /**
  * 保存工作日设置
@@ -313,6 +584,7 @@ const loadSettings = () => {
 // 组件挂载时加载设置
 onMounted(() => {
   loadSettings()
+  loadProviders()
 })
 </script>
 
@@ -611,6 +883,133 @@ onMounted(() => {
   }
 }
 
+// 抽屉样式
+.provider-drawer {
+  :deep(.el-drawer__body) {
+    padding: 0;
+  }
+}
+
+.drawer-content {
+  padding: $spacing-6;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.drawer-header {
+  margin-bottom: $spacing-6;
+  padding-bottom: $spacing-4;
+  border-bottom: 1px solid $border-color;
+}
+
+.provider-list {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-4;
+}
+
+.provider-card {
+  background: white;
+  border: 1px solid $border-color;
+  border-radius: 10px;
+  padding: $spacing-5;
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: $primary-color;
+    box-shadow: 0 4px 12px rgba($primary-color, 0.1);
+  }
+}
+
+.provider-info {
+  margin-bottom: $spacing-4;
+}
+
+.provider-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacing-3;
+
+  .provider-name {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $text-primary;
+    margin: 0;
+  }
+
+  .provider-badges {
+    display: flex;
+    gap: $spacing-2;
+  }
+}
+
+.provider-url {
+  font-size: $font-size-sm;
+  color: $text-secondary;
+  margin: 0 0 $spacing-1 0;
+  word-break: break-all;
+}
+
+.provider-time {
+  font-size: $font-size-xs;
+  color: $text-tertiary;
+  margin: 0;
+}
+
+.provider-actions {
+  display: flex;
+  gap: $spacing-2;
+  justify-content: flex-end;
+
+  .el-button {
+    border-radius: 6px;
+    border: none;
+    box-shadow: none;
+    font-weight: $font-weight-medium;
+
+    &:hover {
+      transform: translateY(-1px);
+    }
+  }
+}
+
+// 对话框样式
+.provider-dialog {
+  :deep(.el-dialog__body) {
+    padding: $spacing-6;
+  }
+
+  :deep(.el-form-item__label) {
+    font-weight: $font-weight-medium;
+    color: $text-primary;
+  }
+
+  :deep(.el-input__wrapper) {
+    border-radius: 8px;
+    border: 1px solid $border-color;
+    box-shadow: none;
+
+    &:hover {
+      border-color: $primary-color;
+    }
+
+    &.is-focus {
+      border-color: $primary-color;
+      box-shadow: none;
+    }
+  }
+
+  :deep(.el-switch) {
+    .el-switch__core {
+      border-radius: 12px;
+    }
+  }
+}
+
 // 响应式设计
 @media (max-width: $breakpoint-md) {
   .settings-page {
@@ -650,6 +1049,27 @@ onMounted(() => {
 
     .quick-btn {
       width: 100%;
+    }
+  }
+
+  .provider-drawer {
+    :deep(.el-drawer) {
+      width: 90% !important;
+    }
+  }
+
+  .provider-actions {
+    flex-direction: column;
+
+    .el-button {
+      width: 100%;
+    }
+  }
+
+  .provider-dialog {
+    :deep(.el-dialog) {
+      width: 90% !important;
+      margin: 0 auto;
     }
   }
 }

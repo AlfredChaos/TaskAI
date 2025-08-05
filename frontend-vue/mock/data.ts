@@ -1,5 +1,5 @@
 // Mock数据
-import type { User, Project, Task, Notification, TimelineNode } from '../src/types'
+import type { User, Project, Task, Notification, TimelineNode, ModelProvider, ProviderModel } from '../src/types'
 
 // 用户数据
 export const users: User[] = [
@@ -52,6 +52,71 @@ export const users: User[] = [
     status: 'online',
     createdAt: '2024-01-05T00:00:00Z',
     updatedAt: '2024-01-05T00:00:00Z'
+  }
+]
+
+// 模型供应商数据
+export const modelProviders: ModelProvider[] = [
+  {
+    id: "339671485977333760",
+    name: "openrouter",
+    base_url: "https://api.openrouter.com",
+    is_active: true,
+    is_default: true,
+    created_at: "2025-07-26T07:33:13.065729",
+    updated_at: "2025-07-26T07:33:59.426999"
+  },
+  {
+    id: "339671485977333761",
+    name: "openai",
+    base_url: "https://api.openai.com",
+    is_active: true,
+    is_default: false,
+    created_at: "2025-01-01T00:00:00.000000",
+    updated_at: "2025-01-01T00:00:00.000000"
+  },
+  {
+    id: "339671485977333762",
+    name: "anthropic",
+    base_url: "https://api.anthropic.com",
+    is_active: true,
+    is_default: false,
+    created_at: "2025-01-01T00:00:00.000000",
+    updated_at: "2025-01-01T00:00:00.000000"
+  }
+]
+
+// 供应商模型数据
+export const providerModels: ProviderModel[] = [
+  {
+    id: "deepseek-chat",
+    created: null,
+    object: "model",
+    owned_by: "deepseek"
+  },
+  {
+    id: "gpt-4",
+    created: "2023-03-14T00:00:00.000000",
+    object: "model",
+    owned_by: "openai"
+  },
+  {
+    id: "gpt-3.5-turbo",
+    created: "2023-03-01T00:00:00.000000",
+    object: "model",
+    owned_by: "openai"
+  },
+  {
+    id: "claude-3-opus",
+    created: "2024-02-29T00:00:00.000000",
+    object: "model",
+    owned_by: "anthropic"
+  },
+  {
+    id: "claude-3-sonnet",
+    created: "2024-02-29T00:00:00.000000",
+    object: "model",
+    owned_by: "anthropic"
   }
 ]
 

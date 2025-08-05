@@ -5,7 +5,7 @@
 
 import { config } from '@/config'
 import type { ApiResponse, Project, Task, TaskStatus } from '@/types'
-import { users, projects, tasks, notifications, timelineNodes } from '../../mock/data'
+import { users, projects, tasks, notifications, timelineNodes, modelProviders, providerModels } from '../../mock/data'
 
 /**
  * 模拟网络延迟
@@ -548,6 +548,155 @@ export class MockService {
   }
 
   /**
+   * AI 供应商相关mock
+   */
+  static async aiProvider(method: string, url: string, data?: Record<string, unknown>, params?: Record<string, unknown>): Promise<ApiResponse> {
+    await delay()
+    
+    // 获取供应商列表
+    if (method === 'GET' && url === '/ai/providers/') {
+      const { page = 1, size = 20, is_active } = params || {}
+      
+      let filteredProviders = modelProviders
+      if (typeof is_active === 'boolean') {
+        filteredProviders = filteredProviders.filter(p => p.is_active === is_active)
+      }
+      
+      return paginate(filteredProviders, Number(page), Number(size))
+    }
+    
+    // 创建供应商
+    if (method === 'POST' && url === '/ai/providers/') {
+      const providerData = data as Partial<typeof modelProviders[0]>
+      const newProvider = {
+        id: 'provider_' + Date.now(),
+        name: providerData?.name || '新供应商',
+        base_url: providerData?.base_url || '',
+        is_active: providerData?.is_active ?? true,
+        is_default: providerData?.is_default ?? false,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      }
+      
+      // 如果设置为默认，取消其他供应商的默认状态
+      if (newProvider.is_default) {
+        modelProviders.forEach(p => p.is_default = false)
+      }
+      
+      modelProviders.push(newProvider)
+      return success(newProvider)
+    }
+    
+    // 获取单个供应商详情
+    if (method === 'GET' && url.includes('/ai/providers/') && url !== '/ai/providers/') {
+      const providerId = url.split('/').pop()
+      const provider = modelProviders.find(p => p.id === providerId)
+      return provider ? success(provider) : error('模型供应商不存在', 404)
+    }
+    
+    // 更新供应商
+    if (method === 'PUT' && url.includes('/ai/providers/')) {
+      const providerId = url.split('/').pop()
+      const providerIndex = modelProviders.findIndex(p => p.id === providerId)
+      
+      if (providerIndex === -1) {
+        return error('模型供应商不存在', 404)
+      }
+      
+      const providerData = data as Partial<typeof modelProviders[0]>
+      const updatedProvider = {
+        ...modelProviders[providerIndex],
+        ...providerData,
+        updated_at: new Date().toISOString()
+      }
+      
+      // 如果设置为默认，取消其他供应商的默认状态
+      if (updatedProvider.is_default) {
+        modelProviders.forEach((p, index) => {
+          if (index !== providerIndex) {
+            p.is_default = false
+          }
+        })
+      }
+      
+      modelProviders[providerIndex] = updatedProvider
+      return success(updatedProvider)
+    }
+    
+    // 删除供应商
+    if (method === 'DELETE' && url.includes('/ai/providers/')) {
+      const providerId = url.split('/').pop()
+      const providerIndex = modelProviders.findIndex(p => p.id === providerId)
+      
+      if (providerIndex === -1) {
+        return error('模型供应商不存在', 404)
+      }
+      
+      modelProviders.splice(providerIndex, 1)
+      return success(null)
+    }
+    
+    // 设置默认供应商
+    if (method === 'POST' && url === '/ai/providers/set-default') {
+      const { provider_id } = data as { provider_id: string }
+      const providerIndex = modelProviders.findIndex(p => p.id === provider_id)
+      
+      if (providerIndex === -1) {
+        return error('模型供应商不存在', 404)
+      }
+      
+      // 取消所有供应商的默认状态
+      modelProviders.forEach(p => p.is_default = false)
+      // 设置指定供应商为默认
+      modelProviders[providerIndex].is_default = true
+      modelProviders[providerIndex].updated_at = new Date().toISOString()
+      
+      return success(null)
+    }
+    
+    return error('未找到对应的mock接口', 404)
+  }
+
+  /**
+   * AI 模型相关mock
+   */
+  static async aiModel(method: string, url: string, params?: Record<string, unknown>): Promise<ApiResponse> {
+    await delay()
+    
+    // 获取供应商可用模型
+    if (method === 'GET' && url === '/ai/chat/models') {
+      const { page = 1, size = 20, provider_id, owned_by } = params || {}
+      
+      let filteredModels = providerModels
+      
+      // 根据供应商ID过滤（如果提供）
+      if (provider_id) {
+        const provider = modelProviders.find(p => p.id === provider_id)
+        if (provider) {
+          // 根据供应商名称过滤模型
+          filteredModels = filteredModels.filter(m => m.owned_by === provider.name)
+        }
+      }
+      
+      // 根据所有者过滤
+      if (owned_by) {
+        filteredModels = filteredModels.filter(m => m.owned_by === owned_by)
+      }
+      
+      return paginate(filteredModels, Number(page), Number(size))
+    }
+    
+    // 获取单个模型详情
+    if (method === 'GET' && url.includes('/ai/chat/models/')) {
+      const modelId = url.split('/').pop()
+      const model = providerModels.find(m => m.id === modelId)
+      return model ? success(model) : error('模型不存在', 404)
+    }
+    
+    return error('未找到对应的mock接口', 404)
+  }
+
+  /**
    * 路由mock请求到对应的处理函数
    * @param method HTTP方法
    * @param url 请求URL
@@ -593,6 +742,14 @@ export class MockService {
     
     if (cleanUrl.startsWith('/upload')) {
       return this.upload(method, cleanUrl)
+    }
+    
+    if (cleanUrl.startsWith('/ai/providers')) {
+      return this.aiProvider(method, cleanUrl, data, params)
+    }
+    
+    if (cleanUrl.startsWith('/ai/chat/models')) {
+      return this.aiModel(method, cleanUrl, params)
     }
     
     return error('未找到对应的mock接口', 404)

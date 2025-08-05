@@ -50,7 +50,7 @@
           </div>
 
           <div class="report-footer">
-            <el-badge v-if="report.isNew" :value="'新'" class="new-badge" />
+            <el-badge v-if="report.isNew" is-dot class="new-badge" />
           </div>
         </div>
       </div>
@@ -780,6 +780,7 @@ onMounted(() => {
 /* 左侧报告管理 */
 .reports-sidebar {
   width: 600px;
+  max-width: 40%;
   display: flex;
   flex-direction: column;
 }

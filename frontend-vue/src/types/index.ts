@@ -213,3 +213,22 @@ export interface TimelineNode {
   projectId: string
   createdAt: string
 }
+
+// 模型供应商类型
+export interface ModelProvider {
+  id: string
+  name: string
+  base_url: string
+  is_active: boolean
+  is_default: boolean
+  created_at: string
+  updated_at: string
+}
+
+// 供应商模型类型
+export interface ProviderModel {
+  id: string
+  created: string | null
+  object: string
+  owned_by: string
+}
