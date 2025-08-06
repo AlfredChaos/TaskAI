@@ -24,6 +24,23 @@
     </div>
 
     <div class="header-right">
+      <!-- 中英切换下拉菜单 -->
+      <el-dropdown @command="handleLanguageChange" trigger="click">
+        <el-button class="translate-btn" circle>
+          <img src="@/assets/translate.png" alt="translate" class="translate-icon" />
+        </el-button>
+        <template #dropdown>
+          <el-dropdown-menu>
+            <el-dropdown-item command="zh" :disabled="currentLanguage === 'zh'">
+              中文
+            </el-dropdown-item>
+            <el-dropdown-item command="en" :disabled="currentLanguage === 'en'">
+              English
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
+
       <!-- 新建按钮 -->
       <el-dropdown @command="handleCreate">
         <el-button type="primary" class="create-btn">
@@ -95,6 +112,8 @@ import {
 } from '@element-plus/icons-vue'
 import { getNameInitials } from '@/utils'
 import { defineProps } from 'vue'
+import { useLanguageStore } from '@/stores'
+import type { Language } from '@/stores/language'
 
 // Name
 defineOptions({ name: 'AppHeader' })
@@ -129,6 +148,10 @@ const emit = defineEmits<Emits>()
 const router = useRouter()
 const route = useRoute()
 const searchQuery = ref('')
+const languageStore = useLanguageStore()
+
+// 当前语言
+const currentLanguage = computed(() => languageStore.currentLanguage)
 
 /**
  * 生成面包屑导航数据
@@ -202,6 +225,15 @@ const handleUserAction = (command: string) => {
       break
   }
 }
+
+/**
+ * 处理语言切换
+ * @param language 目标语言
+ */
+const handleLanguageChange = (language: Language) => {
+  languageStore.setLanguage(language)
+  console.log(`语言已切换为: ${language === 'zh' ? '中文' : 'English'}`)
+}
 </script>
 
 <style scoped lang="scss">
@@ -246,7 +278,7 @@ const handleUserAction = (command: string) => {
 
     .search-input {
       width: 300px;
-      height: 48px;
+      height: 40px;
       border-radius: 10px;
 
       :deep(.el-input__wrapper) {
@@ -281,16 +313,29 @@ const handleUserAction = (command: string) => {
     justify-content: flex-end;
     gap: $spacing-4;
 
+    .el-button {
+      border: none;
+      border-radius: 10px;
+    }
+
+    .translate-btn {
+
+      .translate-icon {
+        width: 30px;
+        height: 30px;
+        object-fit: contain;
+      }
+    }
+
     .create-btn {
-      width: 146px;
-      height: 44px;
+      width: 100px;
+      height: 40px;
       display: flex;
       align-items: center;
       gap: $spacing-1;
       border-radius: 14px;
       padding: $spacing-2 $spacing-4;
       font-weight: $font-weight-medium;
-      margin-right: 40px;
 
       &:hover {
         transform: translateY(-1px);
@@ -299,7 +344,6 @@ const handleUserAction = (command: string) => {
     }
 
     .user-info {
-      min-width: 200px;
       max-width: 240px;
       display: flex;
       align-items: center;

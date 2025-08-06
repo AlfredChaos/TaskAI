@@ -885,6 +885,11 @@ onMounted(() => {
           }
         }
 
+        .el-button {
+          border: none;
+          box-shadow: none;
+        }
+
         .add-task-btn {
           opacity: 0.7;
           border-radius: 5px;
